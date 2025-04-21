@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 3 Unit Testing | Code Development in Model Infrastructure</title>
+  <meta name="description" content="A general discussion of the current coding practices followed by the Model Infrastructure Team." />
+  <meta name="generator" content="bookdown 0.43 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 3 Unit Testing | Code Development in Model Infrastructure" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="A general discussion of the current coding practices followed by the Model Infrastructure Team." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 3 Unit Testing | Code Development in Model Infrastructure" />
+  
+  <meta name="twitter:description" content="A general discussion of the current coding practices followed by the Model Infrastructure Team." />
+  
+
+<meta name="author" content="Leigh Alexander and Shannon T. Holloway" />
+
+
+<meta name="date" content="2025-04-18" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="extended-function-example.html"/>
+<link rel="next" href="pull-request-pr-peer-review.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">A Minimal Book Example</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Introduction</a></li>
+<li class="chapter" data-level="1" data-path="Functions.html"><a href="Functions.html"><i class="fa fa-check"></i><b>1</b> Elements of a Function</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="Functions.html"><a href="Functions.html#function-structure"><i class="fa fa-check"></i><b>1.1</b> Function Structure</a>
+<ul>
+<li class="chapter" data-level="1.1.1" data-path="Functions.html"><a href="Functions.html#usage-definition"><i class="fa fa-check"></i><b>1.1.1</b> Usage definition</a></li>
+<li class="chapter" data-level="1.1.2" data-path="Functions.html"><a href="Functions.html#input-testing"><i class="fa fa-check"></i><b>1.1.2</b> Input Testing</a></li>
+<li class="chapter" data-level="1.1.3" data-path="Functions.html"><a href="Functions.html#input-processing"><i class="fa fa-check"></i><b>1.1.3</b> Input Processing</a></li>
+<li class="chapter" data-level="1.1.4" data-path="Functions.html"><a href="Functions.html#task-implementation"><i class="fa fa-check"></i><b>1.1.4</b> Task Implementation</a></li>
+<li class="chapter" data-level="1.1.5" data-path="Functions.html"><a href="Functions.html#result-construction-and-testing"><i class="fa fa-check"></i><b>1.1.5</b> Result Construction and Testing</a></li>
+<li class="chapter" data-level="1.1.6" data-path="Functions.html"><a href="Functions.html#concluding-remarks"><i class="fa fa-check"></i><b>1.1.6</b> Concluding Remarks</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="extended-function-example.html"><a href="extended-function-example.html"><i class="fa fa-check"></i><b>2</b> Extended Function Example</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="extended-function-example.html"><a href="extended-function-example.html#procedure-specification"><i class="fa fa-check"></i><b>2.1</b> Procedure Specification</a></li>
+<li class="chapter" data-level="2.2" data-path="extended-function-example.html"><a href="extended-function-example.html#select-a-design"><i class="fa fa-check"></i><b>2.2</b> Select a Design</a></li>
+<li class="chapter" data-level="2.3" data-path="extended-function-example.html"><a href="extended-function-example.html#s3-based-design-structure"><i class="fa fa-check"></i><b>2.3</b> S3 Based Design Structure</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="extended-function-example.html"><a href="extended-function-example.html#usage-specification"><i class="fa fa-check"></i><b>2.3.1</b> Usage Specification</a></li>
+<li class="chapter" data-level="2.3.2" data-path="extended-function-example.html"><a href="extended-function-example.html#input-testing-1"><i class="fa fa-check"></i><b>2.3.2</b> Input Testing</a></li>
+<li class="chapter" data-level="2.3.3" data-path="extended-function-example.html"><a href="extended-function-example.html#input-processing-1"><i class="fa fa-check"></i><b>2.3.3</b> Input Processing</a></li>
+<li class="chapter" data-level="2.3.4" data-path="extended-function-example.html"><a href="extended-function-example.html#task-implementation-1"><i class="fa fa-check"></i><b>2.3.4</b> Task Implementation</a></li>
+<li class="chapter" data-level="2.3.5" data-path="extended-function-example.html"><a href="extended-function-example.html#results-construction-and-testing"><i class="fa fa-check"></i><b>2.3.5</b> Results Construction and Testing</a></li>
+<li class="chapter" data-level="2.3.6" data-path="extended-function-example.html"><a href="extended-function-example.html#extensions"><i class="fa fa-check"></i><b>2.3.6</b> Extensions</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="extended-function-example.html"><a href="extended-function-example.html#framework-and-utility-function-design-structure"><i class="fa fa-check"></i><b>2.4</b> Framework and Utility Function Design Structure</a>
+<ul>
+<li class="chapter" data-level="2.4.1" data-path="extended-function-example.html"><a href="extended-function-example.html#usage-specification-1"><i class="fa fa-check"></i><b>2.4.1</b> Usage Specification</a></li>
+<li class="chapter" data-level="2.4.2" data-path="extended-function-example.html"><a href="extended-function-example.html#input-testing-2"><i class="fa fa-check"></i><b>2.4.2</b> Input Testing</a></li>
+<li class="chapter" data-level="2.4.3" data-path="extended-function-example.html"><a href="extended-function-example.html#input-processing-2"><i class="fa fa-check"></i><b>2.4.3</b> Input Processing</a></li>
+<li class="chapter" data-level="2.4.4" data-path="extended-function-example.html"><a href="extended-function-example.html#task-implementation-2"><i class="fa fa-check"></i><b>2.4.4</b> Task Implementation</a></li>
+<li class="chapter" data-level="2.4.5" data-path="extended-function-example.html"><a href="extended-function-example.html#results-construction-and-testing-1"><i class="fa fa-check"></i><b>2.4.5</b> Results Construction and Testing</a></li>
+<li class="chapter" data-level="2.4.6" data-path="extended-function-example.html"><a href="extended-function-example.html#extensions-1"><i class="fa fa-check"></i><b>2.4.6</b> Extensions</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="extended-function-example.html"><a href="extended-function-example.html#key-design-differences"><i class="fa fa-check"></i><b>2.5</b> Key Design Differences</a></li>
+<li class="chapter" data-level="2.6" data-path="extended-function-example.html"><a href="extended-function-example.html#blended-design"><i class="fa fa-check"></i><b>2.6</b> Blended Design</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="unit-testing.html"><a href="unit-testing.html"><i class="fa fa-check"></i><b>3</b> Unit Testing</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="unit-testing.html"><a href="unit-testing.html#general-comments-1"><i class="fa fa-check"></i><b>3.1</b> General Comments</a></li>
+<li class="chapter" data-level="3.2" data-path="unit-testing.html"><a href="unit-testing.html#unit-tests-for-chapter-2-example"><i class="fa fa-check"></i><b>3.2</b> Unit Tests for Chapter 2 Example</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="unit-testing.html"><a href="unit-testing.html#common-functions-1"><i class="fa fa-check"></i><b>3.2.1</b> Common Functions</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="unit-testing.html"><a href="unit-testing.html#s3-based-design"><i class="fa fa-check"></i><b>3.3</b> S3 Based Design</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="unit-testing.html"><a href="unit-testing.html#s3-extensions-1"><i class="fa fa-check"></i><b>3.3.1</b> S3 Extensions</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="pull-request-pr-peer-review.html"><a href="pull-request-pr-peer-review.html"><i class="fa fa-check"></i><b>4</b> Pull Request (PR) Peer Review</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="pull-request-pr-peer-review.html"><a href="pull-request-pr-peer-review.html#pull-request-submission"><i class="fa fa-check"></i><b>4.1</b> Pull Request Submission</a></li>
+<li class="chapter" data-level="4.2" data-path="pull-request-pr-peer-review.html"><a href="pull-request-pr-peer-review.html#peer-review-preparation"><i class="fa fa-check"></i><b>4.2</b> Peer Review Preparation</a></li>
+<li class="chapter" data-level="4.3" data-path="pull-request-pr-peer-review.html"><a href="pull-request-pr-peer-review.html#map-out-your-own-approach"><i class="fa fa-check"></i><b>4.3</b> Map Out Your Own Approach</a></li>
+<li class="chapter" data-level="4.4" data-path="pull-request-pr-peer-review.html"><a href="pull-request-pr-peer-review.html#review-the-proposed-changes"><i class="fa fa-check"></i><b>4.4</b> Review the Proposed Changes</a></li>
+<li class="chapter" data-level="4.5" data-path="pull-request-pr-peer-review.html"><a href="pull-request-pr-peer-review.html#discuss-alternative-solutions"><i class="fa fa-check"></i><b>4.5</b> Discuss Alternative Solutions</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://bookdown.org/" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Code Development in Model Infrastructure</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="unit-testing" class="section level1 hasAnchor" number="3">
+<h1><span class="header-section-number">Chapter 3</span> Unit Testing<a href="unit-testing.html#unit-testing" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="general-comments-1" class="section level2 hasAnchor" number="3.1">
+<h2><span class="header-section-number">3.1</span> General Comments<a href="unit-testing.html#general-comments-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><strong>Test what your function <em>does</em> not what it <em>calls</em>.</strong> <br></p>
+<p>What we mean by this is, the goal of unit testing is to test the code that <strong>you</strong> wrote, not to test the code that other developers have written. We start from the premise that any third-party function that we make use of has already been rigorously tested. Take for example the <code>predict.survregnet()</code> method from <code>SomaSurvival</code> (modified slightly to facilitate this discussion).</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="unit-testing.html#cb26-1" tabindex="-1"></a>predict.survregnet <span class="ot">&lt;-</span> <span class="cf">function</span>(object, newdata, lambda,</span>
+<span id="cb26-2"><a href="unit-testing.html#cb26-2" tabindex="-1"></a>                               <span class="at">type =</span> <span class="fu">c</span>(<span class="st">&quot;response&quot;</span>, <span class="st">&quot;lp&quot;</span>, <span class="st">&quot;linear&quot;</span>, <span class="st">&quot;quantile&quot;</span>,</span>
+<span id="cb26-3"><a href="unit-testing.html#cb26-3" tabindex="-1"></a>                                        <span class="st">&quot;uquantile&quot;</span>, <span class="st">&quot;coefficients&quot;</span>),</span>
+<span id="cb26-4"><a href="unit-testing.html#cb26-4" tabindex="-1"></a>                               <span class="at">p =</span> <span class="fl">0.5</span>, <span class="at">na.action =</span> stats<span class="sc">::</span>na.pass, ...) {</span>
+<span id="cb26-5"><a href="unit-testing.html#cb26-5" tabindex="-1"></a></span>
+<span id="cb26-6"><a href="unit-testing.html#cb26-6" tabindex="-1"></a>  <span class="do">### Input Testing</span></span>
+<span id="cb26-7"><a href="unit-testing.html#cb26-7" tabindex="-1"></a>  type <span class="ot">&lt;-</span> <span class="fu">match.arg</span>(type)</span>
+<span id="cb26-8"><a href="unit-testing.html#cb26-8" tabindex="-1"></a>  <span class="fu">stopifnot</span>(</span>
+<span id="cb26-9"><a href="unit-testing.html#cb26-9" tabindex="-1"></a>    <span class="st">&quot;`newdata` must be a data.frame or soma_adat.&quot;</span> <span class="ot">=</span></span>
+<span id="cb26-10"><a href="unit-testing.html#cb26-10" tabindex="-1"></a>      <span class="fu">missing</span>(newdata) <span class="sc">||</span> <span class="fu">is.data.frame</span>(newdata) <span class="sc">||</span> <span class="fu">is.soma_adat</span>(newdata),</span>
+<span id="cb26-11"><a href="unit-testing.html#cb26-11" tabindex="-1"></a>    <span class="st">&quot;`lambda` must be a scalar numeric.&quot;</span> <span class="ot">=</span></span>
+<span id="cb26-12"><a href="unit-testing.html#cb26-12" tabindex="-1"></a>      <span class="sc">!</span><span class="fu">missing</span>(lambda) <span class="sc">&amp;&amp;</span> <span class="fu">is.numeric</span>(lambda) <span class="sc">&amp;&amp;</span> <span class="fu">is.vector</span>(lambda) <span class="sc">&amp;&amp;</span> </span>
+<span id="cb26-13"><a href="unit-testing.html#cb26-13" tabindex="-1"></a>      <span class="fu">length</span>(lambda) <span class="sc">==</span> 1L <span class="sc">&amp;&amp;</span> lambda <span class="sc">&gt;=</span> <span class="fl">0.0</span>,</span>
+<span id="cb26-14"><a href="unit-testing.html#cb26-14" tabindex="-1"></a>    <span class="st">&quot;`p` must be a non-negative scalar.&quot;</span> <span class="ot">=</span> </span>
+<span id="cb26-15"><a href="unit-testing.html#cb26-15" tabindex="-1"></a>      <span class="fu">is.numeric</span>(p) <span class="sc">&amp;&amp;</span> <span class="fu">is.vector</span>(p) <span class="sc">&amp;&amp;</span> <span class="fu">length</span>(p) <span class="sc">==</span> 1L <span class="sc">&amp;&amp;</span> p <span class="sc">&gt;=</span> <span class="fl">0.0</span>,</span>
+<span id="cb26-16"><a href="unit-testing.html#cb26-16" tabindex="-1"></a>    <span class="st">&quot;`na.action` must be a function.&quot;</span> <span class="ot">=</span> <span class="fu">is.function</span>(na.action)</span>
+<span id="cb26-17"><a href="unit-testing.html#cb26-17" tabindex="-1"></a>  )</span>
+<span id="cb26-18"><a href="unit-testing.html#cb26-18" tabindex="-1"></a></span>
+<span id="cb26-19"><a href="unit-testing.html#cb26-19" tabindex="-1"></a>  <span class="do">### Input Processing</span></span>
+<span id="cb26-20"><a href="unit-testing.html#cb26-20" tabindex="-1"></a>  survreg_obj <span class="ot">&lt;-</span> <span class="fu">convert2Survreg</span>(object, lambda)</span>
+<span id="cb26-21"><a href="unit-testing.html#cb26-21" tabindex="-1"></a>  </span>
+<span id="cb26-22"><a href="unit-testing.html#cb26-22" tabindex="-1"></a>  <span class="do">### Task Implementation</span></span>
+<span id="cb26-23"><a href="unit-testing.html#cb26-23" tabindex="-1"></a>  <span class="cf">if</span> ( type <span class="sc">==</span> <span class="st">&quot;coefficients&quot;</span> ) {</span>
+<span id="cb26-24"><a href="unit-testing.html#cb26-24" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">data.frame</span>(<span class="at">pred =</span> survreg_obj<span class="sc">$</span>coefficients))</span>
+<span id="cb26-25"><a href="unit-testing.html#cb26-25" tabindex="-1"></a>  }</span>
+<span id="cb26-26"><a href="unit-testing.html#cb26-26" tabindex="-1"></a></span>
+<span id="cb26-27"><a href="unit-testing.html#cb26-27" tabindex="-1"></a>  <span class="cf">if</span> ( <span class="fu">missing</span>(newdata) ) {</span>
+<span id="cb26-28"><a href="unit-testing.html#cb26-28" tabindex="-1"></a>    pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(survreg_obj, <span class="at">type =</span> type, <span class="at">p =</span> p, <span class="at">na.action =</span> na.action, ...)</span>
+<span id="cb26-29"><a href="unit-testing.html#cb26-29" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb26-30"><a href="unit-testing.html#cb26-30" tabindex="-1"></a>    pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(survreg_obj, <span class="at">newdata =</span> newdata, <span class="at">type =</span> type, <span class="at">p =</span> p, </span>
+<span id="cb26-31"><a href="unit-testing.html#cb26-31" tabindex="-1"></a>                    <span class="at">na.action =</span> na.action, ...)</span>
+<span id="cb26-32"><a href="unit-testing.html#cb26-32" tabindex="-1"></a>  }</span>
+<span id="cb26-33"><a href="unit-testing.html#cb26-33" tabindex="-1"></a></span>
+<span id="cb26-34"><a href="unit-testing.html#cb26-34" tabindex="-1"></a>  <span class="do">### Result construction and testing</span></span>
+<span id="cb26-35"><a href="unit-testing.html#cb26-35" tabindex="-1"></a>  <span class="fu">data.frame</span>(<span class="at">pred =</span> pred)</span>
+<span id="cb26-36"><a href="unit-testing.html#cb26-36" tabindex="-1"></a>}</span></code></pre></div>
+<p>After some testing and manipulation of the inputs provided by the user, this function simply calls the <code>predict.survreg()</code> function of the <code>survival</code> package. It is not our goal to test if the predictions returned by <code>predict.survreg()</code> are correct; as it is an external function, we assume that it is properly tested by the developers. Rather, we want to make sure that our testing and manipulation of the inputs are doing what we expect as well as verify that the structure of the <em>call to</em> <code>predict.survreg()</code> is being properly formulated.</p>
+<p>In the code below we have added comments specifying the tests that could be implemented for the unit test suite of this function.</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="unit-testing.html#cb27-1" tabindex="-1"></a>predict.survregnet <span class="ot">&lt;-</span> <span class="cf">function</span>(object, newdata, lambda,</span>
+<span id="cb27-2"><a href="unit-testing.html#cb27-2" tabindex="-1"></a>                               <span class="at">type =</span> <span class="fu">c</span>(<span class="st">&quot;response&quot;</span>, <span class="st">&quot;lp&quot;</span>, <span class="st">&quot;linear&quot;</span>, <span class="st">&quot;quantile&quot;</span>,</span>
+<span id="cb27-3"><a href="unit-testing.html#cb27-3" tabindex="-1"></a>                                        <span class="st">&quot;uquantile&quot;</span>, <span class="st">&quot;coefficients&quot;</span>),</span>
+<span id="cb27-4"><a href="unit-testing.html#cb27-4" tabindex="-1"></a>                               <span class="at">p =</span> <span class="fl">0.5</span>, <span class="at">na.action =</span> stats<span class="sc">::</span>na.pass, ...) {</span>
+<span id="cb27-5"><a href="unit-testing.html#cb27-5" tabindex="-1"></a></span>
+<span id="cb27-6"><a href="unit-testing.html#cb27-6" tabindex="-1"></a>  <span class="do">### Input Testing</span></span>
+<span id="cb27-7"><a href="unit-testing.html#cb27-7" tabindex="-1"></a>  <span class="do">#### - Ensure that an error is generated when `type` is an invalid value</span></span>
+<span id="cb27-8"><a href="unit-testing.html#cb27-8" tabindex="-1"></a>  type <span class="ot">&lt;-</span> <span class="fu">match.arg</span>(type)</span>
+<span id="cb27-9"><a href="unit-testing.html#cb27-9" tabindex="-1"></a></span>
+<span id="cb27-10"><a href="unit-testing.html#cb27-10" tabindex="-1"></a>  <span class="do">#### - Ensure that an error is generated when `newdata` is provided but is not a </span></span>
+<span id="cb27-11"><a href="unit-testing.html#cb27-11" tabindex="-1"></a>  <span class="do">####   data.frame or soma_adat</span></span>
+<span id="cb27-12"><a href="unit-testing.html#cb27-12" tabindex="-1"></a>  <span class="do">#### - Ensure that an error is generated when `lambda` is not provided</span></span>
+<span id="cb27-13"><a href="unit-testing.html#cb27-13" tabindex="-1"></a>  <span class="do">#### - Ensure that an error is generated when `lambda` is not numeric</span></span>
+<span id="cb27-14"><a href="unit-testing.html#cb27-14" tabindex="-1"></a>  <span class="do">#### - Ensure that an error is generated when `lambda` is not a vector</span></span>
+<span id="cb27-15"><a href="unit-testing.html#cb27-15" tabindex="-1"></a>  <span class="do">#### - Ensure that an error is generated when `lambda` is provided as a vector</span></span>
+<span id="cb27-16"><a href="unit-testing.html#cb27-16" tabindex="-1"></a>  <span class="do">####   of length &gt; 1</span></span>
+<span id="cb27-17"><a href="unit-testing.html#cb27-17" tabindex="-1"></a>  <span class="do">#### - Ensure that an error is generated when `lambda` is negative</span></span>
+<span id="cb27-18"><a href="unit-testing.html#cb27-18" tabindex="-1"></a>  <span class="do">#### - Ensure that an error is generated when `p` is not numeric</span></span>
+<span id="cb27-19"><a href="unit-testing.html#cb27-19" tabindex="-1"></a>  <span class="do">#### - Ensure that an error is generated when `p` is not a vector</span></span>
+<span id="cb27-20"><a href="unit-testing.html#cb27-20" tabindex="-1"></a>  <span class="do">#### - Ensure that an error is generated when `p` is provided as a vector</span></span>
+<span id="cb27-21"><a href="unit-testing.html#cb27-21" tabindex="-1"></a>  <span class="do">####   of length &gt; 1</span></span>
+<span id="cb27-22"><a href="unit-testing.html#cb27-22" tabindex="-1"></a>  <span class="do">#### - Ensure that an error is generated when `p` is negative</span></span>
+<span id="cb27-23"><a href="unit-testing.html#cb27-23" tabindex="-1"></a>  <span class="do">#### - Ensure that an error is generated when `na.action` is not a function</span></span>
+<span id="cb27-24"><a href="unit-testing.html#cb27-24" tabindex="-1"></a>  <span class="fu">stopifnot</span>(</span>
+<span id="cb27-25"><a href="unit-testing.html#cb27-25" tabindex="-1"></a>    <span class="st">&quot;`newdata` must be a data.frame or soma_adat.&quot;</span> <span class="ot">=</span></span>
+<span id="cb27-26"><a href="unit-testing.html#cb27-26" tabindex="-1"></a>      <span class="fu">missing</span>(newdata) <span class="sc">||</span> <span class="fu">is.data.frame</span>(newdata) <span class="sc">||</span> <span class="fu">is.soma_adat</span>(newdata),</span>
+<span id="cb27-27"><a href="unit-testing.html#cb27-27" tabindex="-1"></a>    <span class="st">&quot;`lambda` must be a scalar numeric.&quot;</span> <span class="ot">=</span></span>
+<span id="cb27-28"><a href="unit-testing.html#cb27-28" tabindex="-1"></a>      <span class="sc">!</span><span class="fu">missing</span>(lambda) <span class="sc">&amp;&amp;</span> <span class="fu">is.numeric</span>(lambda) <span class="sc">&amp;&amp;</span> <span class="fu">is.vector</span>(lambda) <span class="sc">&amp;&amp;</span> </span>
+<span id="cb27-29"><a href="unit-testing.html#cb27-29" tabindex="-1"></a>      <span class="fu">length</span>(lambda) <span class="sc">==</span> 1L <span class="sc">&amp;&amp;</span> lambda <span class="sc">&gt;=</span> <span class="fl">0.0</span>,</span>
+<span id="cb27-30"><a href="unit-testing.html#cb27-30" tabindex="-1"></a>    <span class="st">&quot;`p` must be a non-negative scalar.&quot;</span> <span class="ot">=</span> </span>
+<span id="cb27-31"><a href="unit-testing.html#cb27-31" tabindex="-1"></a>      <span class="fu">is.numeric</span>(p) <span class="sc">&amp;&amp;</span> <span class="fu">is.vector</span>(p) <span class="sc">&amp;&amp;</span> <span class="fu">length</span>(p) <span class="sc">==</span> 1L <span class="sc">&amp;&amp;</span> p <span class="sc">&gt;=</span> <span class="fl">0.0</span>,</span>
+<span id="cb27-32"><a href="unit-testing.html#cb27-32" tabindex="-1"></a>    <span class="st">&quot;`na.action` must be a function.&quot;</span> <span class="ot">=</span> <span class="fu">is.function</span>(na.action)</span>
+<span id="cb27-33"><a href="unit-testing.html#cb27-33" tabindex="-1"></a>  )</span>
+<span id="cb27-34"><a href="unit-testing.html#cb27-34" tabindex="-1"></a></span>
+<span id="cb27-35"><a href="unit-testing.html#cb27-35" tabindex="-1"></a>  <span class="do">### Input Processing</span></span>
+<span id="cb27-36"><a href="unit-testing.html#cb27-36" tabindex="-1"></a>  <span class="do">#### Assume that convert2Survreg does what it is supposed to do.</span></span>
+<span id="cb27-37"><a href="unit-testing.html#cb27-37" tabindex="-1"></a>  <span class="do">#### This line of code does need to be unit tested</span></span>
+<span id="cb27-38"><a href="unit-testing.html#cb27-38" tabindex="-1"></a>  survreg_obj <span class="ot">&lt;-</span> <span class="fu">convert2Survreg</span>(object, lambda)</span>
+<span id="cb27-39"><a href="unit-testing.html#cb27-39" tabindex="-1"></a>  </span>
+<span id="cb27-40"><a href="unit-testing.html#cb27-40" tabindex="-1"></a>  <span class="do">### Task Implementation</span></span>
+<span id="cb27-41"><a href="unit-testing.html#cb27-41" tabindex="-1"></a>  <span class="do">#### - Ensure that a data.frame of the coefficients for provided lambda value is</span></span>
+<span id="cb27-42"><a href="unit-testing.html#cb27-42" tabindex="-1"></a>  <span class="do">####   returned when `type = &quot;coefficients&quot;`</span></span>
+<span id="cb27-43"><a href="unit-testing.html#cb27-43" tabindex="-1"></a>  <span class="cf">if</span> ( type <span class="sc">==</span> <span class="st">&quot;coefficients&quot;</span> ) {</span>
+<span id="cb27-44"><a href="unit-testing.html#cb27-44" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">data.frame</span>(<span class="at">pred =</span> survreg_obj<span class="sc">$</span>coefficients))</span>
+<span id="cb27-45"><a href="unit-testing.html#cb27-45" tabindex="-1"></a>  }</span>
+<span id="cb27-46"><a href="unit-testing.html#cb27-46" tabindex="-1"></a></span>
+<span id="cb27-47"><a href="unit-testing.html#cb27-47" tabindex="-1"></a>  <span class="cf">if</span> ( <span class="fu">missing</span>(newdata) ) {</span>
+<span id="cb27-48"><a href="unit-testing.html#cb27-48" tabindex="-1"></a>    <span class="do">#### - Create a survreg object from the survregnet object using </span></span>
+<span id="cb27-49"><a href="unit-testing.html#cb27-49" tabindex="-1"></a>    <span class="do">####   convert2survreg(survregnet_object, lambda = lambda); </span></span>
+<span id="cb27-50"><a href="unit-testing.html#cb27-50" tabindex="-1"></a>    <span class="do">####   assume a single lambda value</span></span>
+<span id="cb27-51"><a href="unit-testing.html#cb27-51" tabindex="-1"></a>    <span class="do">####   Test equality of all combinations (keeping in mind that this function</span></span>
+<span id="cb27-52"><a href="unit-testing.html#cb27-52" tabindex="-1"></a>    <span class="do">####    returns a data.frame and predict.survreg will return a vector)</span></span>
+<span id="cb27-53"><a href="unit-testing.html#cb27-53" tabindex="-1"></a>    <span class="do">####   - default inputs should be equal to</span></span>
+<span id="cb27-54"><a href="unit-testing.html#cb27-54" tabindex="-1"></a>    <span class="do">####     predict.survreg(survreg_object, type = &quot;response&quot;)</span></span>
+<span id="cb27-55"><a href="unit-testing.html#cb27-55" tabindex="-1"></a>    <span class="do">####   - type = &quot;lp&quot; should be equal to</span></span>
+<span id="cb27-56"><a href="unit-testing.html#cb27-56" tabindex="-1"></a>    <span class="do">####     predict.survreg(survreg_object, type = &quot;lp&quot;)</span></span>
+<span id="cb27-57"><a href="unit-testing.html#cb27-57" tabindex="-1"></a>    <span class="do">####   - type = &quot;linear&quot; should be equal to</span></span>
+<span id="cb27-58"><a href="unit-testing.html#cb27-58" tabindex="-1"></a>    <span class="do">####     predict.survreg(survreg_object, type = &quot;linear&quot;)</span></span>
+<span id="cb27-59"><a href="unit-testing.html#cb27-59" tabindex="-1"></a>    <span class="do">####   - type = &quot;quantile&quot; (p taking default value) should be equal to</span></span>
+<span id="cb27-60"><a href="unit-testing.html#cb27-60" tabindex="-1"></a>    <span class="do">####     predict.survreg(survreg_object, type = &quot;quantile&quot;, p = 0.5)</span></span>
+<span id="cb27-61"><a href="unit-testing.html#cb27-61" tabindex="-1"></a>    <span class="do">####   - type = &quot;quantile&quot;; p = 0.25 should be equal to</span></span>
+<span id="cb27-62"><a href="unit-testing.html#cb27-62" tabindex="-1"></a>    <span class="do">####     predict.survreg(survreg_object, type = &quot;quantile&quot;, p = 0.25)</span></span>
+<span id="cb27-63"><a href="unit-testing.html#cb27-63" tabindex="-1"></a>    <span class="do">####   - type = &quot;uquantile&quot; (p taking default value) should be equal to</span></span>
+<span id="cb27-64"><a href="unit-testing.html#cb27-64" tabindex="-1"></a>    <span class="do">####     predict.survreg(survreg_object, type = &quot;uquantile&quot;, p = 0.5)</span></span>
+<span id="cb27-65"><a href="unit-testing.html#cb27-65" tabindex="-1"></a>    <span class="do">####   - type = &quot;uquantile&quot;; p = 0.25 should be equal to</span></span>
+<span id="cb27-66"><a href="unit-testing.html#cb27-66" tabindex="-1"></a>    <span class="do">####     predict.survreg(survreg_object, type = &quot;uquantile&quot;, p = 0.25)</span></span>
+<span id="cb27-67"><a href="unit-testing.html#cb27-67" tabindex="-1"></a>    <span class="do">####</span></span>
+<span id="cb27-68"><a href="unit-testing.html#cb27-68" tabindex="-1"></a>    <span class="do">#### - pass an additional argument through the ellipsis</span></span>
+<span id="cb27-69"><a href="unit-testing.html#cb27-69" tabindex="-1"></a>    <span class="do">####   - default values with addition of se.fit = TRUE should be equal to</span></span>
+<span id="cb27-70"><a href="unit-testing.html#cb27-70" tabindex="-1"></a>    <span class="do">####   predict.survreg(survreg_object, type = &quot;response&quot;, se.fit = TRUE)</span></span>
+<span id="cb27-71"><a href="unit-testing.html#cb27-71" tabindex="-1"></a>    pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(survreg_obj, <span class="at">type =</span> type, <span class="at">p =</span> p, <span class="at">na.action =</span> na.action, ...)</span>
+<span id="cb27-72"><a href="unit-testing.html#cb27-72" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb27-73"><a href="unit-testing.html#cb27-73" tabindex="-1"></a>    <span class="do">#### - Create a survreg object from the survregnet object using </span></span>
+<span id="cb27-74"><a href="unit-testing.html#cb27-74" tabindex="-1"></a>    <span class="do">####   convert2survreg(survregnet_object, lambda = lambda); </span></span>
+<span id="cb27-75"><a href="unit-testing.html#cb27-75" tabindex="-1"></a>    <span class="do">####   assume a single lambda value</span></span>
+<span id="cb27-76"><a href="unit-testing.html#cb27-76" tabindex="-1"></a>    <span class="do">####   Test equality of all combinations (keeping in mind that this function</span></span>
+<span id="cb27-77"><a href="unit-testing.html#cb27-77" tabindex="-1"></a>    <span class="do">####    returns a data.frame and predict.survreg will return a vector)</span></span>
+<span id="cb27-78"><a href="unit-testing.html#cb27-78" tabindex="-1"></a>    <span class="do">####   - default inputs should be equal to</span></span>
+<span id="cb27-79"><a href="unit-testing.html#cb27-79" tabindex="-1"></a>    <span class="do">####     predict.survreg(survreg_object, newdata, type = &quot;response&quot;)</span></span>
+<span id="cb27-80"><a href="unit-testing.html#cb27-80" tabindex="-1"></a>    <span class="do">####   - type = &quot;lp&quot; should be equal to</span></span>
+<span id="cb27-81"><a href="unit-testing.html#cb27-81" tabindex="-1"></a>    <span class="do">####     predict.survreg(survreg_object, newdata, type = &quot;lp&quot;)</span></span>
+<span id="cb27-82"><a href="unit-testing.html#cb27-82" tabindex="-1"></a>    <span class="do">####   - type = &quot;linear&quot; should be equal to</span></span>
+<span id="cb27-83"><a href="unit-testing.html#cb27-83" tabindex="-1"></a>    <span class="do">####     predict.survreg(survreg_object, newdata, type = &quot;linear&quot;)</span></span>
+<span id="cb27-84"><a href="unit-testing.html#cb27-84" tabindex="-1"></a>    <span class="do">####   - type = &quot;quantile&quot; (p taking default value) should be equal to</span></span>
+<span id="cb27-85"><a href="unit-testing.html#cb27-85" tabindex="-1"></a>    <span class="do">####     predict.survreg(survreg_object, newdata, type = &quot;quantile&quot;, p = 0.5)</span></span>
+<span id="cb27-86"><a href="unit-testing.html#cb27-86" tabindex="-1"></a>    <span class="do">####   - type = &quot;quantile&quot;; p = 0.25 should be equal to</span></span>
+<span id="cb27-87"><a href="unit-testing.html#cb27-87" tabindex="-1"></a>    <span class="do">####     predict.survreg(survreg_object, newdata, type = &quot;quantile&quot;, p = 0.25)</span></span>
+<span id="cb27-88"><a href="unit-testing.html#cb27-88" tabindex="-1"></a>    <span class="do">####   - type = &quot;uquantile&quot; (p taking default value) should be equal to</span></span>
+<span id="cb27-89"><a href="unit-testing.html#cb27-89" tabindex="-1"></a>    <span class="do">####     predict.survreg(survreg_object, newdata, type = &quot;uquantile&quot;, p = 0.5)</span></span>
+<span id="cb27-90"><a href="unit-testing.html#cb27-90" tabindex="-1"></a>    <span class="do">####   - type = &quot;uquantile&quot;; p = 0.25 should be equal to</span></span>
+<span id="cb27-91"><a href="unit-testing.html#cb27-91" tabindex="-1"></a>    <span class="do">####     predict.survreg(survreg_object, newdata, type = &quot;uquantile&quot;, p = 0.25)</span></span>
+<span id="cb27-92"><a href="unit-testing.html#cb27-92" tabindex="-1"></a>    <span class="do">#### </span></span>
+<span id="cb27-93"><a href="unit-testing.html#cb27-93" tabindex="-1"></a>    <span class="do">####   - set at least 1 case of `newdata` to NA</span></span>
+<span id="cb27-94"><a href="unit-testing.html#cb27-94" tabindex="-1"></a>    <span class="do">####     na.action = stats::na.omit should be equal to</span></span>
+<span id="cb27-95"><a href="unit-testing.html#cb27-95" tabindex="-1"></a>    <span class="do">####     predict.survreg(survreg_object, newdata_na, type = &quot;response&quot;, </span></span>
+<span id="cb27-96"><a href="unit-testing.html#cb27-96" tabindex="-1"></a>    <span class="do">####                     na.action = stats::na.omit)</span></span>
+<span id="cb27-97"><a href="unit-testing.html#cb27-97" tabindex="-1"></a>    <span class="do">####</span></span>
+<span id="cb27-98"><a href="unit-testing.html#cb27-98" tabindex="-1"></a>    <span class="do">#### - pass an additional argument through the ellipsis</span></span>
+<span id="cb27-99"><a href="unit-testing.html#cb27-99" tabindex="-1"></a>    <span class="do">####   - default values with addition of se.fit = TRUE should be equal to</span></span>
+<span id="cb27-100"><a href="unit-testing.html#cb27-100" tabindex="-1"></a>    <span class="do">####   predict.survreg(survreg_object, type = &quot;response&quot;, se.fit = TRUE)</span></span>
+<span id="cb27-101"><a href="unit-testing.html#cb27-101" tabindex="-1"></a>    pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(survreg_obj, <span class="at">newdata =</span> newdata, <span class="at">type =</span> type, <span class="at">p =</span> p, </span>
+<span id="cb27-102"><a href="unit-testing.html#cb27-102" tabindex="-1"></a>                    <span class="at">na.action =</span> na.action, ...)</span>
+<span id="cb27-103"><a href="unit-testing.html#cb27-103" tabindex="-1"></a>  }</span>
+<span id="cb27-104"><a href="unit-testing.html#cb27-104" tabindex="-1"></a></span>
+<span id="cb27-105"><a href="unit-testing.html#cb27-105" tabindex="-1"></a>  <span class="fu">data.frame</span>(<span class="at">pred =</span> pred)</span>
+<span id="cb27-106"><a href="unit-testing.html#cb27-106" tabindex="-1"></a>}</span></code></pre></div>
+<p>There are some additional tests that could be included. For example, ensuring that <code>na.action</code> is one of <code>na.omit</code>, <code>na.fail</code>, <code>na.omit</code>, or <code>na.fail</code> as well as ensuring that any inputs provided through the ellipsis are indeed formals of <code>predict.survreg()</code>. However, as these inputs are only <em>passed</em> to <code>predict.survreg()</code> (we make no internal usage of these input) we can assume that <code>predict.survreg()</code> handles inappropriate values. Technically, we could omit any testing of <code>na.action</code> because we do not use it. However, because we explicitly include it as input and pass it to the <code>predict()</code> method, it is not a bad idea to at least ensure that it is the appropriate type of object, i.e., a function.</p>
+</div>
+<div id="unit-tests-for-chapter-2-example" class="section level2 hasAnchor" number="3.2">
+<h2><span class="header-section-number">3.2</span> Unit Tests for Chapter 2 Example<a href="unit-testing.html#unit-tests-for-chapter-2-example" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>To highlight some general recommendations for developing unit tests, we will make use of the implementations developed in Chapter 2. We will not cover every function.</p>
+<div id="common-functions-1" class="section level3 hasAnchor" number="3.2.1">
+<h3><span class="header-section-number">3.2.1</span> Common Functions<a href="unit-testing.html#common-functions-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Begin the test suite by developing tests for the common internal functions. This allows us to safely make use of these resources when testing functions that call the common functions, i.e., once <code>.bindata()</code> is fully tested, we can call <code>.bindata()</code> in any later test suite without needing to verify its returned value.</p>
+<p>Because all of the implementations make use of the same utility functions <code>.binData()</code> and <code>testProbabilities()</code>, we develop these tests without concern for the overall design choice.</p>
+<p>It is recommended that unit tests are developed for each component of the function: input testing, input processing, task implementation, and returned result. Typically, the final two components (task and result) will be combined.</p>
+<p>We will begin with the <code>.binData()</code> function</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="unit-testing.html#cb28-1" tabindex="-1"></a><span class="co">#&#39; Internal function to perform binning</span></span>
+<span id="cb28-2"><a href="unit-testing.html#cb28-2" tabindex="-1"></a><span class="co">#&#39; </span></span>
+<span id="cb28-3"><a href="unit-testing.html#cb28-3" tabindex="-1"></a><span class="co">#&#39; Provided a vector of values and a vector of bin boundaries, </span></span>
+<span id="cb28-4"><a href="unit-testing.html#cb28-4" tabindex="-1"></a><span class="co">#&#39;   identify the bin in which each value falls and the total number of values</span></span>
+<span id="cb28-5"><a href="unit-testing.html#cb28-5" tabindex="-1"></a><span class="co">#&#39;   in each bin.</span></span>
+<span id="cb28-6"><a href="unit-testing.html#cb28-6" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb28-7"><a href="unit-testing.html#cb28-7" tabindex="-1"></a><span class="co">#&#39; @noRd</span></span>
+<span id="cb28-8"><a href="unit-testing.html#cb28-8" tabindex="-1"></a><span class="co">#&#39; @param values A numeric or numeric vector</span></span>
+<span id="cb28-9"><a href="unit-testing.html#cb28-9" tabindex="-1"></a><span class="co">#&#39; @param bin.boundaries Numeric vector. The k+1 boundaries of k bins.</span></span>
+<span id="cb28-10"><a href="unit-testing.html#cb28-10" tabindex="-1"></a><span class="co">#&#39; @return A list containing</span></span>
+<span id="cb28-11"><a href="unit-testing.html#cb28-11" tabindex="-1"></a><span class="co">#&#39; \item{bins}{A vector of the bin index to which each value is assigned.}</span></span>
+<span id="cb28-12"><a href="unit-testing.html#cb28-12" tabindex="-1"></a><span class="co">#&#39; \item{totals}{A vector of the total number of cases in each bin.}</span></span>
+<span id="cb28-13"><a href="unit-testing.html#cb28-13" tabindex="-1"></a><span class="co">#&#39; </span></span>
+<span id="cb28-14"><a href="unit-testing.html#cb28-14" tabindex="-1"></a><span class="co">#&#39; @keywords internal</span></span>
+<span id="cb28-15"><a href="unit-testing.html#cb28-15" tabindex="-1"></a>.binData <span class="ot">&lt;-</span> <span class="cf">function</span>(values, bin.boundaries, ...) {</span>
+<span id="cb28-16"><a href="unit-testing.html#cb28-16" tabindex="-1"></a>  <span class="do">### Input Testing</span></span>
+<span id="cb28-17"><a href="unit-testing.html#cb28-17" tabindex="-1"></a>  <span class="fu">stopifnot</span>(</span>
+<span id="cb28-18"><a href="unit-testing.html#cb28-18" tabindex="-1"></a>    <span class="st">&quot;`values` must be a non-empty, numeric vector.&quot;</span> <span class="ot">=</span> </span>
+<span id="cb28-19"><a href="unit-testing.html#cb28-19" tabindex="-1"></a>      <span class="sc">!</span><span class="fu">missing</span>(values) <span class="sc">&amp;&amp;</span> <span class="fu">is.numeric</span>(values) <span class="sc">&amp;&amp;</span> <span class="fu">is.vector</span>(values) <span class="sc">&amp;&amp;</span></span>
+<span id="cb28-20"><a href="unit-testing.html#cb28-20" tabindex="-1"></a>      <span class="fu">length</span>(values) <span class="sc">!=</span> 0L,</span>
+<span id="cb28-21"><a href="unit-testing.html#cb28-21" tabindex="-1"></a>    <span class="st">&quot;`bin.boundaries` must be a numeric vector of length &gt; 1.&quot;</span> <span class="ot">=</span> </span>
+<span id="cb28-22"><a href="unit-testing.html#cb28-22" tabindex="-1"></a>      <span class="sc">!</span><span class="fu">missing</span>(bin.boundaries) <span class="sc">&amp;&amp;</span> <span class="fu">is.numeric</span>(bin.boundaries) <span class="sc">&amp;&amp;</span> </span>
+<span id="cb28-23"><a href="unit-testing.html#cb28-23" tabindex="-1"></a>      <span class="fu">length</span>(bin.boundaries) <span class="sc">&gt;</span> 1L <span class="sc">&amp;&amp;</span> <span class="fu">is.vector</span>(bin.boundaries),</span>
+<span id="cb28-24"><a href="unit-testing.html#cb28-24" tabindex="-1"></a>    <span class="st">&quot;All values in `bin.boundaries` must be unique.&quot;</span> <span class="ot">=</span> </span>
+<span id="cb28-25"><a href="unit-testing.html#cb28-25" tabindex="-1"></a>      <span class="fu">length</span>(bin.boundaries) <span class="sc">==</span> <span class="fu">length</span>(<span class="fu">unique</span>(bin.boundaries)),</span>
+<span id="cb28-26"><a href="unit-testing.html#cb28-26" tabindex="-1"></a>    <span class="st">&quot;`bin.boundaries` cannot contain NA or NaN values.&quot;</span> <span class="ot">=</span> </span>
+<span id="cb28-27"><a href="unit-testing.html#cb28-27" tabindex="-1"></a>      <span class="fu">all</span>(<span class="sc">!</span><span class="fu">is.na</span>(bin.boundaries) <span class="sc">&amp;&amp;</span> <span class="sc">!</span><span class="fu">is.nan</span>(bin.boundaries)),</span>
+<span id="cb28-28"><a href="unit-testing.html#cb28-28" tabindex="-1"></a>    <span class="st">&quot;`bin.boundaries` must be in increasing order.&quot;</span> <span class="ot">=</span> <span class="sc">!</span><span class="fu">is.unsorted</span>(bin.boundaries),</span>
+<span id="cb28-29"><a href="unit-testing.html#cb28-29" tabindex="-1"></a>    <span class="st">&quot;`values` must be finite and in range of `bin.boundaries`.&quot;</span> <span class="ot">=</span> </span>
+<span id="cb28-30"><a href="unit-testing.html#cb28-30" tabindex="-1"></a>      <span class="fu">all</span>(<span class="fu">is.finite</span>(values)) <span class="sc">&amp;&amp;</span> <span class="fu">all</span>(values <span class="sc">&gt;=</span> <span class="fu">min</span>(bin.boundaries)) <span class="sc">&amp;&amp;</span> </span>
+<span id="cb28-31"><a href="unit-testing.html#cb28-31" tabindex="-1"></a>      <span class="fu">all</span>(values <span class="sc">&lt;=</span> <span class="fu">max</span>(bin.boundaries))</span>
+<span id="cb28-32"><a href="unit-testing.html#cb28-32" tabindex="-1"></a>  )</span>
+<span id="cb28-33"><a href="unit-testing.html#cb28-33" tabindex="-1"></a>  </span>
+<span id="cb28-34"><a href="unit-testing.html#cb28-34" tabindex="-1"></a>  <span class="do">### Input Processing</span></span>
+<span id="cb28-35"><a href="unit-testing.html#cb28-35" tabindex="-1"></a>  </span>
+<span id="cb28-36"><a href="unit-testing.html#cb28-36" tabindex="-1"></a>  <span class="do">### Task Implementation</span></span>
+<span id="cb28-37"><a href="unit-testing.html#cb28-37" tabindex="-1"></a>  <span class="co"># Identify bin membership based on the provided probabilities</span></span>
+<span id="cb28-38"><a href="unit-testing.html#cb28-38" tabindex="-1"></a>  bins <span class="ot">&lt;-</span> <span class="fu">findInterval</span>(values, bin.boundaries, <span class="at">all.inside =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb28-39"><a href="unit-testing.html#cb28-39" tabindex="-1"></a>  </span>
+<span id="cb28-40"><a href="unit-testing.html#cb28-40" tabindex="-1"></a>  <span class="co"># Tally the number of cases in each probability bin</span></span>
+<span id="cb28-41"><a href="unit-testing.html#cb28-41" tabindex="-1"></a>  totals <span class="ot">&lt;-</span> <span class="fu">tabulate</span>(bins)</span>
+<span id="cb28-42"><a href="unit-testing.html#cb28-42" tabindex="-1"></a>  <span class="fu">names</span>(totals) <span class="ot">&lt;-</span> 1L<span class="sc">:</span>(<span class="fu">length</span>(bins)<span class="sc">-</span>1L)</span>
+<span id="cb28-43"><a href="unit-testing.html#cb28-43" tabindex="-1"></a>  </span>
+<span id="cb28-44"><a href="unit-testing.html#cb28-44" tabindex="-1"></a>  <span class="do">### Result Construction and Testing</span></span>
+<span id="cb28-45"><a href="unit-testing.html#cb28-45" tabindex="-1"></a>  <span class="fu">list</span>(<span class="st">&quot;bin.boundaries&quot;</span>  <span class="ot">=</span> bin.boundaries, </span>
+<span id="cb28-46"><a href="unit-testing.html#cb28-46" tabindex="-1"></a>       <span class="st">&quot;bin.id&quot;</span>          <span class="ot">=</span> bins, </span>
+<span id="cb28-47"><a href="unit-testing.html#cb28-47" tabindex="-1"></a>       <span class="st">&quot;totals&quot;</span>          <span class="ot">=</span> totals)</span>
+<span id="cb28-48"><a href="unit-testing.html#cb28-48" tabindex="-1"></a>}</span></code></pre></div>
+<div id="unit-tests-for-input-testing" class="section level4 hasAnchor" number="3.2.1.1">
+<h4><span class="header-section-number">3.2.1.1</span> Unit tests for Input Testing<a href="unit-testing.html#unit-tests-for-input-testing" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Ensure that all stopping conditions are triggered appropriately. This suite can be long, but it is, in the writers’ opinion, the most important test suite. As they say – GIGO or “garbage in, garbage out.” This series of tests will typically involve only the <code>testthat::expect_error()</code> function.</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="unit-testing.html#cb29-1" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;Input Testing generates expected errors&quot;</span>, {</span>
+<span id="cb29-2"><a href="unit-testing.html#cb29-2" tabindex="-1"></a>  <span class="do">## Use a fully named input structure to test for missing value failures.</span></span>
+<span id="cb29-3"><a href="unit-testing.html#cb29-3" tabindex="-1"></a>  <span class="do">##   This test ensures that if the function is called using a function</span></span>
+<span id="cb29-4"><a href="unit-testing.html#cb29-4" tabindex="-1"></a>  <span class="do">##   such as do.call, the elements of the list have been appropriate named.</span></span>
+<span id="cb29-5"><a href="unit-testing.html#cb29-5" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">.binData</span>(<span class="at">bin.boundaries =</span> <span class="fu">c</span>(<span class="fl">0.0</span>, <span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">1.0</span>)),</span>
+<span id="cb29-6"><a href="unit-testing.html#cb29-6" tabindex="-1"></a>               <span class="st">&quot;`values` must be a numeric vector.&quot;</span>)</span>
+<span id="cb29-7"><a href="unit-testing.html#cb29-7" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">.binData</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="fl">0.0</span>, <span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">1.0</span>)),</span>
+<span id="cb29-8"><a href="unit-testing.html#cb29-8" tabindex="-1"></a>               <span class="st">&quot;`bin.boundaries` must be a numeric vector of length &gt; 1.&quot;</span>)</span>
+<span id="cb29-9"><a href="unit-testing.html#cb29-9" tabindex="-1"></a>  </span>
+<span id="cb29-10"><a href="unit-testing.html#cb29-10" tabindex="-1"></a>  <span class="do">## Next use an unnamed structure leaving 1 required input out.</span></span>
+<span id="cb29-11"><a href="unit-testing.html#cb29-11" tabindex="-1"></a>  <span class="do">## Here, because both `values` and `bin.boundaries` are vectors, the</span></span>
+<span id="cb29-12"><a href="unit-testing.html#cb29-12" tabindex="-1"></a>  <span class="do">## `bin.boundaries` missing error is triggered.</span></span>
+<span id="cb29-13"><a href="unit-testing.html#cb29-13" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">.binData</span>(<span class="fu">c</span>(<span class="fl">0.0</span>, <span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">1.0</span>)),</span>
+<span id="cb29-14"><a href="unit-testing.html#cb29-14" tabindex="-1"></a>               <span class="st">&quot;`bin.boundaries` must be a numeric vector of length &gt; 1.&quot;</span>)</span>
+<span id="cb29-15"><a href="unit-testing.html#cb29-15" tabindex="-1"></a>  </span>
+<span id="cb29-16"><a href="unit-testing.html#cb29-16" tabindex="-1"></a>  <span class="do">## Input-by-input, test the required characteristics</span></span>
+<span id="cb29-17"><a href="unit-testing.html#cb29-17" tabindex="-1"></a>  <span class="do">## specify fully valid inputs for all other input arguments</span></span>
+<span id="cb29-18"><a href="unit-testing.html#cb29-18" tabindex="-1"></a>  </span>
+<span id="cb29-19"><a href="unit-testing.html#cb29-19" tabindex="-1"></a>  <span class="do">## `values` must be a numeric vector of length &gt;= 1</span></span>
+<span id="cb29-20"><a href="unit-testing.html#cb29-20" tabindex="-1"></a>  <span class="do">## there is no need to test EVERY type of non-numeric object</span></span>
+<span id="cb29-21"><a href="unit-testing.html#cb29-21" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">.binData</span>(<span class="st">&quot;a&quot;</span>, <span class="fu">c</span>(<span class="fl">0.0</span>, <span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">1.0</span>)),</span>
+<span id="cb29-22"><a href="unit-testing.html#cb29-22" tabindex="-1"></a>               <span class="st">&quot;`values` must be a numeric vector.&quot;</span>)</span>
+<span id="cb29-23"><a href="unit-testing.html#cb29-23" tabindex="-1"></a>  <span class="do">## pass a matrix to ensure the &quot;is.vector&quot; fails; a numeric matrix will pass</span></span>
+<span id="cb29-24"><a href="unit-testing.html#cb29-24" tabindex="-1"></a>  <span class="do">## the is.numeric() test.</span></span>
+<span id="cb29-25"><a href="unit-testing.html#cb29-25" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">.binData</span>(<span class="fu">matrix</span>(<span class="fl">1.0</span>, 2L, 2L), <span class="fu">c</span>(<span class="fl">0.0</span>, <span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">1.0</span>)),</span>
+<span id="cb29-26"><a href="unit-testing.html#cb29-26" tabindex="-1"></a>               <span class="st">&quot;`values` must be a numeric vector of length &gt; 1.&quot;</span>)</span>
+<span id="cb29-27"><a href="unit-testing.html#cb29-27" tabindex="-1"></a>  <span class="do">## pass an empty numeric vector to ensure length() != 0 test fails</span></span>
+<span id="cb29-28"><a href="unit-testing.html#cb29-28" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">.binData</span>(<span class="fu">numeric</span>(0L), <span class="fu">c</span>(<span class="fl">0.0</span>, <span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">1.0</span>)),</span>
+<span id="cb29-29"><a href="unit-testing.html#cb29-29" tabindex="-1"></a>               <span class="st">&quot;`values` must be a numeric vector of length &gt; 1.&quot;</span>)</span>
+<span id="cb29-30"><a href="unit-testing.html#cb29-30" tabindex="-1"></a>  </span>
+<span id="cb29-31"><a href="unit-testing.html#cb29-31" tabindex="-1"></a>  </span>
+<span id="cb29-32"><a href="unit-testing.html#cb29-32" tabindex="-1"></a>  <span class="do">## `bin.boundaries` must be a numeric vector of length &gt; 1</span></span>
+<span id="cb29-33"><a href="unit-testing.html#cb29-33" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">.binData</span>(<span class="fu">c</span>(<span class="fl">0.0</span>, <span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">1.0</span>), <span class="st">&quot;a&quot;</span>),</span>
+<span id="cb29-34"><a href="unit-testing.html#cb29-34" tabindex="-1"></a>               <span class="st">&quot;`bin.boundaries` must be a numeric vector of length &gt; 1.&quot;</span>)</span>
+<span id="cb29-35"><a href="unit-testing.html#cb29-35" tabindex="-1"></a>  <span class="do">## pass a matrix of length 1 to ensure that is.vector() test fails</span></span>
+<span id="cb29-36"><a href="unit-testing.html#cb29-36" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">.binData</span>(<span class="fu">c</span>(<span class="fl">0.0</span>, <span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">1.0</span>), <span class="fu">matrix</span>(<span class="dv">1</span>, 1L, 1L)),</span>
+<span id="cb29-37"><a href="unit-testing.html#cb29-37" tabindex="-1"></a>               <span class="st">&quot;`bin.boundaries` must be a numeric vector of length &gt; 1.&quot;</span>)</span>
+<span id="cb29-38"><a href="unit-testing.html#cb29-38" tabindex="-1"></a>  <span class="do">## pass a scalar to ensure that the length() &gt; 1 test fails</span></span>
+<span id="cb29-39"><a href="unit-testing.html#cb29-39" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">.binData</span>(<span class="fu">c</span>(<span class="fl">0.0</span>, <span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">1.0</span>), <span class="fl">1.0</span>),</span>
+<span id="cb29-40"><a href="unit-testing.html#cb29-40" tabindex="-1"></a>               <span class="st">&quot;`bin.boundaries` must be a numeric vector of length &gt; 1.&quot;</span>)</span>
+<span id="cb29-41"><a href="unit-testing.html#cb29-41" tabindex="-1"></a></span>
+<span id="cb29-42"><a href="unit-testing.html#cb29-42" tabindex="-1"></a>  <span class="do">## `bin.boundaries` must contain unique values</span></span>
+<span id="cb29-43"><a href="unit-testing.html#cb29-43" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">.binData</span>(<span class="fu">c</span>(<span class="fl">0.0</span>, <span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">1.0</span>), <span class="fu">c</span>(<span class="fl">0.0</span>, <span class="fl">0.1</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>)),</span>
+<span id="cb29-44"><a href="unit-testing.html#cb29-44" tabindex="-1"></a>               <span class="st">&quot;All values in `bin.boundaries` must be unique.&quot;</span>)</span>
+<span id="cb29-45"><a href="unit-testing.html#cb29-45" tabindex="-1"></a>  </span>
+<span id="cb29-46"><a href="unit-testing.html#cb29-46" tabindex="-1"></a>  <span class="do">## `bin.boundaries` must be non-NA and non-NaN and unique</span></span>
+<span id="cb29-47"><a href="unit-testing.html#cb29-47" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">.binData</span>(<span class="fu">c</span>(<span class="fl">0.0</span>, <span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">1.0</span>), <span class="fu">c</span>(<span class="fl">0.0</span>, <span class="fl">0.1</span>, <span class="fl">1.0</span>, <span class="cn">NA</span>)),</span>
+<span id="cb29-48"><a href="unit-testing.html#cb29-48" tabindex="-1"></a>               <span class="st">&quot;`bin.boundaries` cannot contain NA or NaN values.&quot;</span>)</span>
+<span id="cb29-49"><a href="unit-testing.html#cb29-49" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">.binData</span>(<span class="fu">c</span>(<span class="fl">0.0</span>, <span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">1.0</span>), <span class="fu">c</span>(<span class="fl">0.0</span>, <span class="fl">0.1</span>, <span class="fl">1.0</span>, <span class="cn">NaN</span>)),</span>
+<span id="cb29-50"><a href="unit-testing.html#cb29-50" tabindex="-1"></a>               <span class="st">&quot;`bin.boundaries` cannot contain NA or NaN values.&quot;</span>)</span>
+<span id="cb29-51"><a href="unit-testing.html#cb29-51" tabindex="-1"></a>  </span>
+<span id="cb29-52"><a href="unit-testing.html#cb29-52" tabindex="-1"></a>  <span class="do">## `bin.boundaries` must be in increasing order</span></span>
+<span id="cb29-53"><a href="unit-testing.html#cb29-53" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">.binData</span>(<span class="fu">c</span>(<span class="fl">0.0</span>, <span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">1.0</span>), <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.4</span>, <span class="fl">0.3</span>, <span class="fl">1.0</span>)),</span>
+<span id="cb29-54"><a href="unit-testing.html#cb29-54" tabindex="-1"></a>               <span class="st">&quot;`bin.boundaries` must be in increasing order.&quot;</span>)</span>
+<span id="cb29-55"><a href="unit-testing.html#cb29-55" tabindex="-1"></a>  </span>
+<span id="cb29-56"><a href="unit-testing.html#cb29-56" tabindex="-1"></a>  <span class="do">## `values` must be finite and within `bin.boundaries`</span></span>
+<span id="cb29-57"><a href="unit-testing.html#cb29-57" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">.binData</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="dv">2</span><span class="sc">:</span><span class="dv">5</span>),</span>
+<span id="cb29-58"><a href="unit-testing.html#cb29-58" tabindex="-1"></a>               <span class="st">&quot;`values` must be finite and in range of `bin.boundaries`.&quot;</span>)</span>
+<span id="cb29-59"><a href="unit-testing.html#cb29-59" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">.binData</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="cn">Inf</span>), <span class="dv">2</span><span class="sc">:</span><span class="dv">5</span>),</span>
+<span id="cb29-60"><a href="unit-testing.html#cb29-60" tabindex="-1"></a>               <span class="st">&quot;`values` must be finite and in range of `bin.boundaries`.&quot;</span>)</span>
+<span id="cb29-61"><a href="unit-testing.html#cb29-61" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">.binData</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="cn">NA</span>), <span class="dv">2</span><span class="sc">:</span><span class="dv">5</span>),</span>
+<span id="cb29-62"><a href="unit-testing.html#cb29-62" tabindex="-1"></a>               <span class="st">&quot;`values` must be finite and in range of `bin.boundaries`.&quot;</span>)</span>
+<span id="cb29-63"><a href="unit-testing.html#cb29-63" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">.binData</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="cn">NaN</span>), <span class="dv">2</span><span class="sc">:</span><span class="dv">5</span>),</span>
+<span id="cb29-64"><a href="unit-testing.html#cb29-64" tabindex="-1"></a>               <span class="st">&quot;`values` must be finite and in range of `bin.boundaries`.&quot;</span>)</span>
+<span id="cb29-65"><a href="unit-testing.html#cb29-65" tabindex="-1"></a>})</span></code></pre></div>
+</div>
+<div id="unit-tests-for-input-processing" class="section level4 hasAnchor" number="3.2.1.2">
+<h4><span class="header-section-number">3.2.1.2</span> Unit tests for Input Processing<a href="unit-testing.html#unit-tests-for-input-processing" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>This function does not have an input processing component.</p>
+</div>
+<div id="unit-tests-for-task-implementation-and-returned-result" class="section level4 hasAnchor" number="3.2.1.3">
+<h4><span class="header-section-number">3.2.1.3</span> Unit tests for Task Implementation and Returned Result<a href="unit-testing.html#unit-tests-for-task-implementation-and-returned-result" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Here, it is often possible to implement the task in a different way. For example, using an explicit <code>for</code> loop rather than <code>apply</code> or using test data that can easily be manipulated or evaluated. We will show a couple of options here – exactly which tests best suit the situation depends heavily on the complexity of the task. The goal is to ensure that <strong>ALL</strong> new code works as expected assuming that the inputs have passed the input testing phase.</p>
+<p>If you are not able to test every line directly, this may be an indication that an intermediate step should be broken off into its own fully testable function.</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="unit-testing.html#cb30-1" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;Task Implementation generates expected result&quot;</span>, {</span>
+<span id="cb30-2"><a href="unit-testing.html#cb30-2" tabindex="-1"></a>  <span class="do">## First, verify that the output returned by the function has the basic</span></span>
+<span id="cb30-3"><a href="unit-testing.html#cb30-3" tabindex="-1"></a>  <span class="do">## characteristics that we expect: a list with 3 elements with appropriate names</span></span>
+<span id="cb30-4"><a href="unit-testing.html#cb30-4" tabindex="-1"></a>  test_object <span class="ot">&lt;-</span> <span class="fu">.binData</span>(<span class="fu">c</span>(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>), <span class="fu">c</span>(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>))</span>
+<span id="cb30-5"><a href="unit-testing.html#cb30-5" tabindex="-1"></a>  <span class="fu">expect_true</span>(<span class="fu">is.list</span>(test_object))</span>
+<span id="cb30-6"><a href="unit-testing.html#cb30-6" tabindex="-1"></a>  <span class="fu">expect_length</span>(test_object, 3L)</span>
+<span id="cb30-7"><a href="unit-testing.html#cb30-7" tabindex="-1"></a>  <span class="fu">expect_named</span>(test_object, <span class="fu">c</span>(<span class="st">&quot;bin.boundaries&quot;</span>, <span class="st">&quot;bin.id&quot;</span>, <span class="st">&quot;totals&quot;</span>))</span>
+<span id="cb30-8"><a href="unit-testing.html#cb30-8" tabindex="-1"></a>  </span>
+<span id="cb30-9"><a href="unit-testing.html#cb30-9" tabindex="-1"></a>  <span class="do">## Here, we opt to use an alternative implementation.</span></span>
+<span id="cb30-10"><a href="unit-testing.html#cb30-10" tabindex="-1"></a>  <span class="do">##   We don&#39;t need to include input tests, etc., and it doesn&#39;t need</span></span>
+<span id="cb30-11"><a href="unit-testing.html#cb30-11" tabindex="-1"></a>  <span class="do">##   to be efficient -- just COMPLETELY DIFFERENT and CORRECT. </span></span>
+<span id="cb30-12"><a href="unit-testing.html#cb30-12" tabindex="-1"></a>  <span class="do">##   It is recommended that this version of the implementation be &quot;simple&quot; </span></span>
+<span id="cb30-13"><a href="unit-testing.html#cb30-13" tabindex="-1"></a>  <span class="do">##   and, when possible, avoids using convenience functions</span></span>
+<span id="cb30-14"><a href="unit-testing.html#cb30-14" tabindex="-1"></a>  <span class="fu">.local_task</span>(values, bin.boundaries) {</span>
+<span id="cb30-15"><a href="unit-testing.html#cb30-15" tabindex="-1"></a>    </span>
+<span id="cb30-16"><a href="unit-testing.html#cb30-16" tabindex="-1"></a>    bins   <span class="ot">&lt;-</span> <span class="fu">integer</span>(<span class="fu">length</span>(values))</span>
+<span id="cb30-17"><a href="unit-testing.html#cb30-17" tabindex="-1"></a>    totals <span class="ot">&lt;-</span> <span class="fu">integer</span>(<span class="fu">length</span>(bin.boundaries) <span class="sc">-</span> 1L)</span>
+<span id="cb30-18"><a href="unit-testing.html#cb30-18" tabindex="-1"></a>    </span>
+<span id="cb30-19"><a href="unit-testing.html#cb30-19" tabindex="-1"></a>    <span class="cf">for</span> ( i <span class="cf">in</span> <span class="fu">seq_along</span>(values) ) {</span>
+<span id="cb30-20"><a href="unit-testing.html#cb30-20" tabindex="-1"></a>      <span class="co"># findInterval() returns k that satisfies bin[k] &lt;= x &lt; bin[k+1]</span></span>
+<span id="cb30-21"><a href="unit-testing.html#cb30-21" tabindex="-1"></a>      bins[i] <span class="ot">&lt;-</span> <span class="fu">sum</span>(values[i] <span class="sc">&gt;=</span> bin.boundaries)</span>
+<span id="cb30-22"><a href="unit-testing.html#cb30-22" tabindex="-1"></a>      </span>
+<span id="cb30-23"><a href="unit-testing.html#cb30-23" tabindex="-1"></a>      <span class="co"># we set `all.inside = TRUE` -- need to implement this clamping</span></span>
+<span id="cb30-24"><a href="unit-testing.html#cb30-24" tabindex="-1"></a>      <span class="co"># any value &gt;= max(bin.boundaries) is shifted to the last bin</span></span>
+<span id="cb30-25"><a href="unit-testing.html#cb30-25" tabindex="-1"></a>      <span class="co"># Note that we do not need to consider the condition value &lt; min(bin.boundaries)</span></span>
+<span id="cb30-26"><a href="unit-testing.html#cb30-26" tabindex="-1"></a>      <span class="co"># because our input testing stops if any value is outside of the range</span></span>
+<span id="cb30-27"><a href="unit-testing.html#cb30-27" tabindex="-1"></a>      <span class="co"># of bin.boundaries</span></span>
+<span id="cb30-28"><a href="unit-testing.html#cb30-28" tabindex="-1"></a>      bins[i] <span class="ot">&lt;-</span> <span class="fu">min</span>(bins[i], <span class="fu">length</span>(bin.boundaries) <span class="sc">-</span> 1L)</span>
+<span id="cb30-29"><a href="unit-testing.html#cb30-29" tabindex="-1"></a>      totals[bins[i]] <span class="ot">&lt;-</span> totals[bins[i]] <span class="sc">+</span> 1L</span>
+<span id="cb30-30"><a href="unit-testing.html#cb30-30" tabindex="-1"></a>    }</span>
+<span id="cb30-31"><a href="unit-testing.html#cb30-31" tabindex="-1"></a>    <span class="fu">list</span>(<span class="st">&quot;bin.boundaries&quot;</span> <span class="ot">=</span> bin.boundaries, </span>
+<span id="cb30-32"><a href="unit-testing.html#cb30-32" tabindex="-1"></a>         <span class="st">&quot;bin.id&quot;</span>         <span class="ot">=</span> bins, </span>
+<span id="cb30-33"><a href="unit-testing.html#cb30-33" tabindex="-1"></a>         <span class="st">&quot;totals&quot;</span>         <span class="ot">=</span> totals)</span>
+<span id="cb30-34"><a href="unit-testing.html#cb30-34" tabindex="-1"></a>  }</span>
+<span id="cb30-35"><a href="unit-testing.html#cb30-35" tabindex="-1"></a>  </span>
+<span id="cb30-36"><a href="unit-testing.html#cb30-36" tabindex="-1"></a>  <span class="do">### Test a variety of inputs ranges, lengths, types</span></span>
+<span id="cb30-37"><a href="unit-testing.html#cb30-37" tabindex="-1"></a>  </span>
+<span id="cb30-38"><a href="unit-testing.html#cb30-38" tabindex="-1"></a>  <span class="do">## &quot;integer-like&quot; numeric with values at the extrema of `bin.boundaries`</span></span>
+<span id="cb30-39"><a href="unit-testing.html#cb30-39" tabindex="-1"></a>  <span class="fu">expect_equal</span>(<span class="fu">.local_task</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>), <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>),</span>
+<span id="cb30-40"><a href="unit-testing.html#cb30-40" tabindex="-1"></a>               <span class="fu">.binData</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>), <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>))</span>
+<span id="cb30-41"><a href="unit-testing.html#cb30-41" tabindex="-1"></a>  <span class="do">## numeric vector</span></span>
+<span id="cb30-42"><a href="unit-testing.html#cb30-42" tabindex="-1"></a>  <span class="fu">expect_equal</span>(<span class="fu">.local_task</span>(withr<span class="sc">::</span><span class="fu">with_seed</span>(42L, stats<span class="sc">::</span><span class="fu">runif</span>(<span class="dv">10</span>)), </span>
+<span id="cb30-43"><a href="unit-testing.html#cb30-43" tabindex="-1"></a>                           <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.5</span>, <span class="fl">1.0</span>)),</span>
+<span id="cb30-44"><a href="unit-testing.html#cb30-44" tabindex="-1"></a>               <span class="fu">.binData</span>(withr<span class="sc">::</span><span class="fu">with_seed</span>(42L, stats<span class="sc">::</span><span class="fu">runif</span>(<span class="dv">10</span>)), </span>
+<span id="cb30-45"><a href="unit-testing.html#cb30-45" tabindex="-1"></a>                        <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.5</span>, <span class="fl">1.0</span>)))</span>
+<span id="cb30-46"><a href="unit-testing.html#cb30-46" tabindex="-1"></a>  </span>
+<span id="cb30-47"><a href="unit-testing.html#cb30-47" tabindex="-1"></a>  <span class="do">### Test extremes</span></span>
+<span id="cb30-48"><a href="unit-testing.html#cb30-48" tabindex="-1"></a>  </span>
+<span id="cb30-49"><a href="unit-testing.html#cb30-49" tabindex="-1"></a>  <span class="do">## A single `value`</span></span>
+<span id="cb30-50"><a href="unit-testing.html#cb30-50" tabindex="-1"></a>  <span class="fu">expect_equal</span>(<span class="fu">.local_task</span>(<span class="fl">10.0</span>, <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">5.0</span>, <span class="fl">20.0</span>)),</span>
+<span id="cb30-51"><a href="unit-testing.html#cb30-51" tabindex="-1"></a>               <span class="fu">.binData</span>(<span class="fl">10.0</span>, <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">5.0</span>, <span class="fl">20.0</span>)))</span>
+<span id="cb30-52"><a href="unit-testing.html#cb30-52" tabindex="-1"></a>  </span>
+<span id="cb30-53"><a href="unit-testing.html#cb30-53" tabindex="-1"></a>  <span class="do">## minimum vector length for `bin.boundaries` definition</span></span>
+<span id="cb30-54"><a href="unit-testing.html#cb30-54" tabindex="-1"></a>  <span class="fu">expect_equal</span>(<span class="fu">.local_task</span>(<span class="fl">10.0</span>, <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">20.0</span>)),</span>
+<span id="cb30-55"><a href="unit-testing.html#cb30-55" tabindex="-1"></a>               <span class="fu">.binData</span>(<span class="fl">10.0</span>, <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">20.0</span>)))</span>
+<span id="cb30-56"><a href="unit-testing.html#cb30-56" tabindex="-1"></a>  </span>
+<span id="cb30-57"><a href="unit-testing.html#cb30-57" tabindex="-1"></a>  <span class="do">## Infinities in boundaries are properly handled</span></span>
+<span id="cb30-58"><a href="unit-testing.html#cb30-58" tabindex="-1"></a>  <span class="fu">expect_equal</span>(<span class="fu">.local_task</span>(<span class="fl">10.0</span>, <span class="fu">c</span>(<span class="sc">-</span><span class="cn">Inf</span>, <span class="cn">Inf</span>)),</span>
+<span id="cb30-59"><a href="unit-testing.html#cb30-59" tabindex="-1"></a>               <span class="fu">.binData</span>(<span class="fl">10.0</span>, <span class="fu">c</span>(<span class="sc">-</span><span class="cn">Inf</span>, <span class="cn">Inf</span>)))</span>
+<span id="cb30-60"><a href="unit-testing.html#cb30-60" tabindex="-1"></a>  </span>
+<span id="cb30-61"><a href="unit-testing.html#cb30-61" tabindex="-1"></a>  <span class="do">## Next, we assume simple inputs for which we can easily construct</span></span>
+<span id="cb30-62"><a href="unit-testing.html#cb30-62" tabindex="-1"></a>  <span class="do">##  the expected output, without requiring a call to an (UNTESTED)</span></span>
+<span id="cb30-63"><a href="unit-testing.html#cb30-63" tabindex="-1"></a>  <span class="do">##  internal function -- sometimes these types of tests are more robust.</span></span>
+<span id="cb30-64"><a href="unit-testing.html#cb30-64" tabindex="-1"></a>  <span class="do">##  For example, it is possible that our second implementation will </span></span>
+<span id="cb30-65"><a href="unit-testing.html#cb30-65" tabindex="-1"></a>  <span class="do">##  include assumptions that we didn&#39;t realize we made.</span></span>
+<span id="cb30-66"><a href="unit-testing.html#cb30-66" tabindex="-1"></a>  <span class="fu">expect_equal</span>(<span class="fu">.binData</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>), <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>),</span>
+<span id="cb30-67"><a href="unit-testing.html#cb30-67" tabindex="-1"></a>               <span class="fu">list</span>(<span class="st">&quot;bin.boundaries&quot;</span> <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>,</span>
+<span id="cb30-68"><a href="unit-testing.html#cb30-68" tabindex="-1"></a>                    <span class="st">&quot;bin.id&quot;</span>         <span class="ot">=</span> <span class="fu">c</span>(1L, 2L, 2L, 1L, 2L, 2L),</span>
+<span id="cb30-69"><a href="unit-testing.html#cb30-69" tabindex="-1"></a>                    <span class="st">&quot;total&quot;</span>          <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;1&quot;</span> <span class="ot">=</span> 2L, <span class="st">&quot;2&quot;</span> <span class="ot">=</span> 4L))</span>
+<span id="cb30-70"><a href="unit-testing.html#cb30-70" tabindex="-1"></a>               </span>
+<span id="cb30-71"><a href="unit-testing.html#cb30-71" tabindex="-1"></a>  <span class="fu">expect_equal</span>(<span class="fu">.binData</span>(<span class="fu">c</span>(<span class="fl">0.0</span>, <span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.3</span>, <span class="fl">0.4</span>, <span class="fl">0.5</span>, <span class="fl">0.6</span>, <span class="fl">0.7</span>, <span class="fl">0.8</span>, <span class="fl">0.9</span>, <span class="fl">1.0</span>), </span>
+<span id="cb30-72"><a href="unit-testing.html#cb30-72" tabindex="-1"></a>                        <span class="fu">c</span>(<span class="fl">0.0</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">1.0</span>)),</span>
+<span id="cb30-73"><a href="unit-testing.html#cb30-73" tabindex="-1"></a>               <span class="fu">list</span>(<span class="st">&quot;bin.boundaries&quot;</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="fl">0.0</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">1.0</span>),</span>
+<span id="cb30-74"><a href="unit-testing.html#cb30-74" tabindex="-1"></a>                    <span class="st">&quot;bin.id&quot;</span>         <span class="ot">=</span> <span class="fu">c</span>(1L, 1L, 1L, 2L, 2L, 3L, 3L, 4L, 4L, 4L),</span>
+<span id="cb30-75"><a href="unit-testing.html#cb30-75" tabindex="-1"></a>                    <span class="st">&quot;total&quot;</span>          <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;1&quot;</span> <span class="ot">=</span> 3L, <span class="st">&quot;2&quot;</span> <span class="ot">=</span> 2L, <span class="st">&quot;3&quot;</span> <span class="ot">=</span> 2L, <span class="st">&quot;4&quot;</span> <span class="ot">=</span> 3L))</span>
+<span id="cb30-76"><a href="unit-testing.html#cb30-76" tabindex="-1"></a>               </span>
+<span id="cb30-77"><a href="unit-testing.html#cb30-77" tabindex="-1"></a>  <span class="fu">expect_equal</span>(<span class="fu">.binData</span>(<span class="fu">c</span>(<span class="fl">0.0</span>, <span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.3</span>, <span class="fl">0.4</span>, <span class="fl">0.5</span>, <span class="fl">0.6</span>, <span class="fl">0.7</span>, <span class="fl">0.8</span>, <span class="fl">0.9</span>, <span class="fl">1.0</span>), </span>
+<span id="cb30-78"><a href="unit-testing.html#cb30-78" tabindex="-1"></a>                        <span class="fu">c</span>(<span class="fl">0.0</span>, <span class="fl">1.0</span>)),</span>
+<span id="cb30-79"><a href="unit-testing.html#cb30-79" tabindex="-1"></a>               <span class="fu">list</span>(<span class="st">&quot;bin.boundaries&quot;</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="fl">0.0</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">1.0</span>),</span>
+<span id="cb30-80"><a href="unit-testing.html#cb30-80" tabindex="-1"></a>                    <span class="st">&quot;bin.id&quot;</span>         <span class="ot">=</span> <span class="fu">c</span>(1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L),</span>
+<span id="cb30-81"><a href="unit-testing.html#cb30-81" tabindex="-1"></a>                    <span class="st">&quot;total&quot;</span>          <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;1&quot;</span> <span class="ot">=</span> 10L))</span>
+<span id="cb30-82"><a href="unit-testing.html#cb30-82" tabindex="-1"></a>               </span>
+<span id="cb30-83"><a href="unit-testing.html#cb30-83" tabindex="-1"></a>  <span class="fu">expect_equal</span>(<span class="fu">.binData</span>(<span class="fl">5.0</span>, <span class="fu">c</span>(<span class="fl">0.0</span>, <span class="fl">10.0</span>)),</span>
+<span id="cb30-84"><a href="unit-testing.html#cb30-84" tabindex="-1"></a>               <span class="fu">list</span>(<span class="st">&quot;bin.boundaries&quot;</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="fl">0.0</span>, <span class="fl">10.0</span>),</span>
+<span id="cb30-85"><a href="unit-testing.html#cb30-85" tabindex="-1"></a>                    <span class="st">&quot;bin.id&quot;</span>         <span class="ot">=</span> 1L,</span>
+<span id="cb30-86"><a href="unit-testing.html#cb30-86" tabindex="-1"></a>                    <span class="st">&quot;total&quot;</span>          <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;1&quot;</span> <span class="ot">=</span> 1L))</span>
+<span id="cb30-87"><a href="unit-testing.html#cb30-87" tabindex="-1"></a><span class="er">}</span>)</span></code></pre></div>
+<p>Similar tests can be constructed for <code>.testProbabilities()</code>.</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="unit-testing.html#cb31-1" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;`.testProbabilities()` returns expected errors.&quot;</span>, {</span>
+<span id="cb31-2"><a href="unit-testing.html#cb31-2" tabindex="-1"></a>  <span class="do">## Input Testing</span></span>
+<span id="cb31-3"><a href="unit-testing.html#cb31-3" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">.testProbabilities</span>(), <span class="st">&quot;`predictions` must be numeric.&quot;</span>)</span>
+<span id="cb31-4"><a href="unit-testing.html#cb31-4" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">.testProbabilities</span>(<span class="st">&quot;a&quot;</span>), <span class="st">&quot;`predictions` must be numeric.&quot;</span>)</span>
+<span id="cb31-5"><a href="unit-testing.html#cb31-5" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">.testProbabilities</span>(<span class="fu">matrix</span>(<span class="fl">1.0</span>, 2L, 2L)), </span>
+<span id="cb31-6"><a href="unit-testing.html#cb31-6" tabindex="-1"></a>               <span class="st">&quot;`predictions` must be numeric.&quot;</span>)</span>
+<span id="cb31-7"><a href="unit-testing.html#cb31-7" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">.testProbabilities</span>(<span class="fu">numeric</span>(<span class="dv">0</span>)), </span>
+<span id="cb31-8"><a href="unit-testing.html#cb31-8" tabindex="-1"></a>               <span class="st">&quot;`predictions` must be numeric.&quot;</span>)</span>
+<span id="cb31-9"><a href="unit-testing.html#cb31-9" tabindex="-1"></a>})</span>
+<span id="cb31-10"><a href="unit-testing.html#cb31-10" tabindex="-1"></a></span>
+<span id="cb31-11"><a href="unit-testing.html#cb31-11" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;`.testProbabilities()` returns expected messages and results.&quot;</span>, {</span>
+<span id="cb31-12"><a href="unit-testing.html#cb31-12" tabindex="-1"></a>  <span class="do">## Task Implementation and Result</span></span>
+<span id="cb31-13"><a href="unit-testing.html#cb31-13" tabindex="-1"></a>  <span class="co"># ensure non-finite values are reset to NA and that</span></span>
+<span id="cb31-14"><a href="unit-testing.html#cb31-14" tabindex="-1"></a>  <span class="co"># the correct message is generated</span></span>
+<span id="cb31-15"><a href="unit-testing.html#cb31-15" tabindex="-1"></a>  <span class="fu">expect_message</span>(out <span class="ot">&lt;-</span> <span class="fu">.testProbabilities</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="cn">Inf</span>, <span class="cn">Inf</span>, <span class="cn">NA</span>, <span class="cn">NaN</span>)),</span>
+<span id="cb31-16"><a href="unit-testing.html#cb31-16" tabindex="-1"></a>                 <span class="st">&quot;4 invalid probabilities have been set to NA.&quot;</span>)</span>
+<span id="cb31-17"><a href="unit-testing.html#cb31-17" tabindex="-1"></a>  <span class="fu">expect_equal</span>(out, <span class="fu">rep</span>(<span class="cn">NA_real_</span>, 4L))</span>
+<span id="cb31-18"><a href="unit-testing.html#cb31-18" tabindex="-1"></a>  </span>
+<span id="cb31-19"><a href="unit-testing.html#cb31-19" tabindex="-1"></a>  <span class="co"># ensure that finite values out of range are reset to NA and that</span></span>
+<span id="cb31-20"><a href="unit-testing.html#cb31-20" tabindex="-1"></a>  <span class="co"># the correct message is generated</span></span>
+<span id="cb31-21"><a href="unit-testing.html#cb31-21" tabindex="-1"></a>  <span class="fu">expect_message</span>(out <span class="ot">&lt;-</span> <span class="fu">.testProbabilities</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.1</span>, <span class="fl">0.0</span>, <span class="fl">0.5</span>, <span class="fl">1.0</span>, <span class="fl">1.1</span>)),</span>
+<span id="cb31-22"><a href="unit-testing.html#cb31-22" tabindex="-1"></a>                 <span class="st">&quot;2 invalid probabilities have been set to NA.&quot;</span>)</span>
+<span id="cb31-23"><a href="unit-testing.html#cb31-23" tabindex="-1"></a>  <span class="fu">expect_equal</span>(out, <span class="fu">c</span>(<span class="cn">NA_real_</span>, <span class="fl">0.0</span>, <span class="fl">0.5</span>, <span class="fl">1.0</span>, <span class="cn">NA_real_</span>))</span>
+<span id="cb31-24"><a href="unit-testing.html#cb31-24" tabindex="-1"></a>  </span>
+<span id="cb31-25"><a href="unit-testing.html#cb31-25" tabindex="-1"></a>  <span class="co"># ensure that a vector of all valid values does not generate a message</span></span>
+<span id="cb31-26"><a href="unit-testing.html#cb31-26" tabindex="-1"></a>  <span class="co"># and returned object is the same as the input object</span></span>
+<span id="cb31-27"><a href="unit-testing.html#cb31-27" tabindex="-1"></a>  <span class="fu">expect_message</span>(out <span class="ot">&lt;-</span> <span class="fu">.testProbabilities</span>(<span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.99</span>)), <span class="cn">NA</span>)</span>
+<span id="cb31-28"><a href="unit-testing.html#cb31-28" tabindex="-1"></a>  <span class="fu">expect_equal</span>(out, <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.99</span>))</span>
+<span id="cb31-29"><a href="unit-testing.html#cb31-29" tabindex="-1"></a>})</span></code></pre></div>
+</div>
+</div>
+</div>
+<div id="s3-based-design" class="section level2 hasAnchor" number="3.3">
+<h2><span class="header-section-number">3.3</span> S3 Based Design<a href="unit-testing.html#s3-based-design" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>We shift our attention now to the inidividual S3 methods of this design, one generic, one default, and three extensions defined for object of class <code>coxph</code>, <code>survreg</code>, and <code>survregnet</code>.</p>
+<p>There is no need to test the generic method. And, the default method is trivially tested.</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="unit-testing.html#cb32-1" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;`survProbBins.default()` is correctly triggered&quot;</span>, {</span>
+<span id="cb32-2"><a href="unit-testing.html#cb32-2" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">survProbBins</span>(<span class="fl">1.0</span>),</span>
+<span id="cb32-3"><a href="unit-testing.html#cb32-3" tabindex="-1"></a>               <span class="st">&quot;`survProbBins()` does not yet support objects of class &#39;numeric&#39;.&quot;</span>)</span>
+<span id="cb32-4"><a href="unit-testing.html#cb32-4" tabindex="-1"></a>})</span></code></pre></div>
+<div id="s3-extensions-1" class="section level3 hasAnchor" number="3.3.1">
+<h3><span class="header-section-number">3.3.1</span> S3 Extensions<a href="unit-testing.html#s3-extensions-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="unit-testing.html#cb33-1" tabindex="-1"></a><span class="co">#&#39; S3 method for objects returned by `survival::coxph()`</span></span>
+<span id="cb33-2"><a href="unit-testing.html#cb33-2" tabindex="-1"></a><span class="co">#&#39; @noRd</span></span>
+<span id="cb33-3"><a href="unit-testing.html#cb33-3" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
+<span id="cb33-4"><a href="unit-testing.html#cb33-4" tabindex="-1"></a>survProbBins.coxph <span class="ot">&lt;-</span> <span class="cf">function</span>(object, newdata, eval.time, bin.boundaries, ...) {</span>
+<span id="cb33-5"><a href="unit-testing.html#cb33-5" tabindex="-1"></a>  <span class="do">### Input Testing</span></span>
+<span id="cb33-6"><a href="unit-testing.html#cb33-6" tabindex="-1"></a>  <span class="co"># We forego testing for appropriate covariates in `newdata`, which will</span></span>
+<span id="cb33-7"><a href="unit-testing.html#cb33-7" tabindex="-1"></a>  <span class="co">#   be inherent in the procedure used to obtain predictions</span></span>
+<span id="cb33-8"><a href="unit-testing.html#cb33-8" tabindex="-1"></a>  <span class="fu">stopifnot</span>(</span>
+<span id="cb33-9"><a href="unit-testing.html#cb33-9" tabindex="-1"></a>    <span class="st">&quot;`newdata` must be a data.frame or soma_adat.&quot;</span> <span class="ot">=</span> </span>
+<span id="cb33-10"><a href="unit-testing.html#cb33-10" tabindex="-1"></a>      <span class="sc">!</span>missing <span class="sc">&amp;&amp;</span> <span class="fu">is.data.frame</span>(newdata) <span class="sc">||</span> <span class="fu">is.soma_adat</span>(newdata),</span>
+<span id="cb33-11"><a href="unit-testing.html#cb33-11" tabindex="-1"></a>    <span class="st">&quot;`eval.time` must be a positive scalar.&quot;</span> <span class="ot">=</span> </span>
+<span id="cb33-12"><a href="unit-testing.html#cb33-12" tabindex="-1"></a>      <span class="sc">!</span><span class="fu">missing</span>(eval.time) <span class="sc">&amp;&amp;</span> <span class="fu">is.numeric</span>(eval.time) <span class="sc">&amp;&amp;</span> eval.time <span class="sc">&gt;</span> <span class="fl">0.0</span>,</span>
+<span id="cb33-13"><a href="unit-testing.html#cb33-13" tabindex="-1"></a>    <span class="st">&quot;`bin.boundaries` must be a numeric vector in [0, 1].&quot;</span> <span class="ot">=</span> </span>
+<span id="cb33-14"><a href="unit-testing.html#cb33-14" tabindex="-1"></a>      <span class="sc">!</span><span class="fu">missing</span>(bin.boundaries) <span class="sc">&amp;&amp;</span> <span class="fu">is.numeric</span>(bin.boundaries) <span class="sc">&amp;&amp;</span></span>
+<span id="cb33-15"><a href="unit-testing.html#cb33-15" tabindex="-1"></a>      <span class="fu">length</span>(bin.boundaries) <span class="sc">&gt;</span> 1L <span class="sc">&amp;&amp;</span> <span class="fu">all</span>(bin.boundaries <span class="sc">&gt;=</span> <span class="fl">0.0</span>) <span class="sc">&amp;&amp;</span> </span>
+<span id="cb33-16"><a href="unit-testing.html#cb33-16" tabindex="-1"></a>      <span class="fu">all</span>(bin.boundaries <span class="sc">&lt;=</span> <span class="fl">1.0</span>)</span>
+<span id="cb33-17"><a href="unit-testing.html#cb33-17" tabindex="-1"></a>  )</span>
+<span id="cb33-18"><a href="unit-testing.html#cb33-18" tabindex="-1"></a>  </span>
+<span id="cb33-19"><a href="unit-testing.html#cb33-19" tabindex="-1"></a>  <span class="do">### Input Processing</span></span>
+<span id="cb33-20"><a href="unit-testing.html#cb33-20" tabindex="-1"></a>  <span class="do">## Predict survival probabilities</span></span>
+<span id="cb33-21"><a href="unit-testing.html#cb33-21" tabindex="-1"></a>  </span>
+<span id="cb33-22"><a href="unit-testing.html#cb33-22" tabindex="-1"></a>  <span class="co"># retrieve baseline hazard</span></span>
+<span id="cb33-23"><a href="unit-testing.html#cb33-23" tabindex="-1"></a>  base_hazard <span class="ot">&lt;-</span> survival<span class="sc">::</span><span class="fu">basehaz</span>(object)</span>
+<span id="cb33-24"><a href="unit-testing.html#cb33-24" tabindex="-1"></a>  <span class="co"># identify time-point in baseline hazard nearest the specified evaluation time</span></span>
+<span id="cb33-25"><a href="unit-testing.html#cb33-25" tabindex="-1"></a>  t_idx       <span class="ot">&lt;-</span> <span class="fu">which.min</span>(<span class="fu">abs</span>(eval.time <span class="sc">-</span> base_hazard[, 2L]))</span>
+<span id="cb33-26"><a href="unit-testing.html#cb33-26" tabindex="-1"></a>  </span>
+<span id="cb33-27"><a href="unit-testing.html#cb33-27" tabindex="-1"></a>  base_hazard_at_t <span class="ot">&lt;-</span> base_hazard[t_idx, 1L]</span>
+<span id="cb33-28"><a href="unit-testing.html#cb33-28" tabindex="-1"></a>  </span>
+<span id="cb33-29"><a href="unit-testing.html#cb33-29" tabindex="-1"></a>  <span class="co"># ensure that baseline hazard is a valid value (not NA, NaN, Inf)</span></span>
+<span id="cb33-30"><a href="unit-testing.html#cb33-30" tabindex="-1"></a>  <span class="cf">if</span> ( <span class="sc">!</span><span class="fu">is.finite</span>(base_hazard_at_t) ) {</span>
+<span id="cb33-31"><a href="unit-testing.html#cb33-31" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">&quot;Invalid baseline hazard &quot;</span>, <span class="fu">value</span>(base_hazard_at_t), <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb33-32"><a href="unit-testing.html#cb33-32" tabindex="-1"></a>  }</span>
+<span id="cb33-33"><a href="unit-testing.html#cb33-33" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">&quot;Survival probability evaluated at t = &quot;</span>, <span class="fu">value</span>(base_hazard[t_idx, 2L]))</span>
+<span id="cb33-34"><a href="unit-testing.html#cb33-34" tabindex="-1"></a></span>
+<span id="cb33-35"><a href="unit-testing.html#cb33-35" tabindex="-1"></a>  <span class="co"># get linear predictors for newdata</span></span>
+<span id="cb33-36"><a href="unit-testing.html#cb33-36" tabindex="-1"></a>  lin_predictors <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>(<span class="fu">predict</span>(object, newdata, <span class="at">type =</span> <span class="st">&quot;lp&quot;</span>, ...),</span>
+<span id="cb33-37"><a href="unit-testing.html#cb33-37" tabindex="-1"></a>                             <span class="at">error =</span> <span class="cf">function</span>(e) {</span>
+<span id="cb33-38"><a href="unit-testing.html#cb33-38" tabindex="-1"></a>                               <span class="fu">stop</span>(<span class="st">&quot;Unable to obtain linear predictors.&quot;</span>,</span>
+<span id="cb33-39"><a href="unit-testing.html#cb33-39" tabindex="-1"></a>                                    e<span class="sc">$</span>message, <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb33-40"><a href="unit-testing.html#cb33-40" tabindex="-1"></a>                               })</span>
+<span id="cb33-41"><a href="unit-testing.html#cb33-41" tabindex="-1"></a>  <span class="co"># do not need to verify linear predictors, this will be done in the</span></span>
+<span id="cb33-42"><a href="unit-testing.html#cb33-42" tabindex="-1"></a>  <span class="co"># .testProbabilities() function</span></span>
+<span id="cb33-43"><a href="unit-testing.html#cb33-43" tabindex="-1"></a>  surv_probabilities <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="sc">-</span>base_hazard_at_t <span class="sc">*</span> <span class="fu">exp</span>(lin_predictors))</span>
+<span id="cb33-44"><a href="unit-testing.html#cb33-44" tabindex="-1"></a>  </span>
+<span id="cb33-45"><a href="unit-testing.html#cb33-45" tabindex="-1"></a>  <span class="co"># Ensure valid predictions</span></span>
+<span id="cb33-46"><a href="unit-testing.html#cb33-46" tabindex="-1"></a>  surv_probabilities <span class="ot">&lt;-</span> <span class="fu">.testProbabilities</span>(surv_probabilities)</span>
+<span id="cb33-47"><a href="unit-testing.html#cb33-47" tabindex="-1"></a>  </span>
+<span id="cb33-48"><a href="unit-testing.html#cb33-48" tabindex="-1"></a>  <span class="do">### Task Implementation</span></span>
+<span id="cb33-49"><a href="unit-testing.html#cb33-49" tabindex="-1"></a>  </span>
+<span id="cb33-50"><a href="unit-testing.html#cb33-50" tabindex="-1"></a>  <span class="co"># Bin and tally predicted probabilities</span></span>
+<span id="cb33-51"><a href="unit-testing.html#cb33-51" tabindex="-1"></a>  result <span class="ot">&lt;-</span> <span class="fu">.binData</span>(surv_probabilities, bin.boundaries)</span>
+<span id="cb33-52"><a href="unit-testing.html#cb33-52" tabindex="-1"></a>  </span>
+<span id="cb33-53"><a href="unit-testing.html#cb33-53" tabindex="-1"></a>  <span class="do">### Result Construction and Testing</span></span>
+<span id="cb33-54"><a href="unit-testing.html#cb33-54" tabindex="-1"></a>  <span class="co"># No further manipulation of the result of .binData() is required</span></span>
+<span id="cb33-55"><a href="unit-testing.html#cb33-55" tabindex="-1"></a>  result</span>
+<span id="cb33-56"><a href="unit-testing.html#cb33-56" tabindex="-1"></a>}</span>
+<span id="cb33-57"><a href="unit-testing.html#cb33-57" tabindex="-1"></a></span>
+<span id="cb33-58"><a href="unit-testing.html#cb33-58" tabindex="-1"></a><span class="co">#&#39; S3 method for objects returned by `survival::survreg`</span></span>
+<span id="cb33-59"><a href="unit-testing.html#cb33-59" tabindex="-1"></a><span class="co">#&#39; @noRd</span></span>
+<span id="cb33-60"><a href="unit-testing.html#cb33-60" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
+<span id="cb33-61"><a href="unit-testing.html#cb33-61" tabindex="-1"></a>survProbBins.survreg <span class="ot">&lt;-</span> <span class="cf">function</span>(object, newdata, eval.time, bin.boundaries, ...) {</span>
+<span id="cb33-62"><a href="unit-testing.html#cb33-62" tabindex="-1"></a>  <span class="do">### Input Testing</span></span>
+<span id="cb33-63"><a href="unit-testing.html#cb33-63" tabindex="-1"></a>  <span class="co"># We forego testing for appropriate covariates in `newdata`, which will</span></span>
+<span id="cb33-64"><a href="unit-testing.html#cb33-64" tabindex="-1"></a>  <span class="co">#   be inherent in the procedure used to obtain predictions</span></span>
+<span id="cb33-65"><a href="unit-testing.html#cb33-65" tabindex="-1"></a>  <span class="fu">stopifnot</span>(</span>
+<span id="cb33-66"><a href="unit-testing.html#cb33-66" tabindex="-1"></a>    <span class="st">&quot;`newdata` must be a data.frame or soma_adat.&quot;</span> <span class="ot">=</span> </span>
+<span id="cb33-67"><a href="unit-testing.html#cb33-67" tabindex="-1"></a>      <span class="sc">!</span>missing <span class="sc">&amp;&amp;</span> <span class="fu">is.data.frame</span>(newdata) <span class="sc">||</span> <span class="fu">is.soma_adat</span>(newdata),</span>
+<span id="cb33-68"><a href="unit-testing.html#cb33-68" tabindex="-1"></a>    <span class="st">&quot;`eval.time` must be numeric.&quot;</span> <span class="ot">=</span> </span>
+<span id="cb33-69"><a href="unit-testing.html#cb33-69" tabindex="-1"></a>      <span class="sc">!</span><span class="fu">missing</span>(eval.time) <span class="sc">&amp;&amp;</span> <span class="fu">is.numeric</span>(eval.time) <span class="sc">&amp;&amp;</span> </span>
+<span id="cb33-70"><a href="unit-testing.html#cb33-70" tabindex="-1"></a>      <span class="fu">is.vector</span>(eval.time) <span class="sc">&amp;&amp;</span> <span class="fu">length</span>(eval.time) <span class="sc">==</span> 1L <span class="sc">&amp;&amp;</span> eval.time <span class="sc">&gt;</span> <span class="fl">0.0</span>,</span>
+<span id="cb33-71"><a href="unit-testing.html#cb33-71" tabindex="-1"></a>    <span class="st">&quot;`bin.boundaries` must be a numeric vector in [0, 1].&quot;</span> <span class="ot">=</span> </span>
+<span id="cb33-72"><a href="unit-testing.html#cb33-72" tabindex="-1"></a>      <span class="sc">!</span><span class="fu">missing</span>(bin.boundaries) <span class="sc">&amp;&amp;</span> <span class="fu">is.numeric</span>(bin.boundaries) <span class="sc">&amp;&amp;</span></span>
+<span id="cb33-73"><a href="unit-testing.html#cb33-73" tabindex="-1"></a>      <span class="fu">length</span>(bin.boundaries) <span class="sc">&gt;</span> 1L <span class="sc">&amp;&amp;</span> <span class="fu">all</span>(bin.boundaries <span class="sc">&gt;=</span> <span class="fl">0.0</span>) <span class="sc">&amp;&amp;</span> </span>
+<span id="cb33-74"><a href="unit-testing.html#cb33-74" tabindex="-1"></a>      <span class="fu">all</span>(bin.boundaries <span class="sc">&lt;=</span> <span class="fl">1.0</span>)</span>
+<span id="cb33-75"><a href="unit-testing.html#cb33-75" tabindex="-1"></a>  )</span>
+<span id="cb33-76"><a href="unit-testing.html#cb33-76" tabindex="-1"></a>  </span>
+<span id="cb33-77"><a href="unit-testing.html#cb33-77" tabindex="-1"></a>  <span class="do">### Input Processing</span></span>
+<span id="cb33-78"><a href="unit-testing.html#cb33-78" tabindex="-1"></a>  <span class="do">## Predict survival probabilities</span></span>
+<span id="cb33-79"><a href="unit-testing.html#cb33-79" tabindex="-1"></a>  </span>
+<span id="cb33-80"><a href="unit-testing.html#cb33-80" tabindex="-1"></a>  lin_predictors <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>(<span class="fu">predict</span>(object, newdata, <span class="at">type =</span> <span class="st">&quot;lp&quot;</span>, ...),</span>
+<span id="cb33-81"><a href="unit-testing.html#cb33-81" tabindex="-1"></a>                             <span class="at">error =</span> <span class="cf">function</span>(e) {</span>
+<span id="cb33-82"><a href="unit-testing.html#cb33-82" tabindex="-1"></a>                               <span class="fu">stop</span>(<span class="st">&quot;Unable to obtain linear predictors.&quot;</span>,</span>
+<span id="cb33-83"><a href="unit-testing.html#cb33-83" tabindex="-1"></a>                                    e<span class="sc">$</span>message, <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb33-84"><a href="unit-testing.html#cb33-84" tabindex="-1"></a>                               })</span>
+<span id="cb33-85"><a href="unit-testing.html#cb33-85" tabindex="-1"></a>  <span class="co"># do not need to verify linear predictors, this will be done in the</span></span>
+<span id="cb33-86"><a href="unit-testing.html#cb33-86" tabindex="-1"></a>  <span class="co"># .testProbabilities() function</span></span>
+<span id="cb33-87"><a href="unit-testing.html#cb33-87" tabindex="-1"></a>                                   </span>
+<span id="cb33-88"><a href="unit-testing.html#cb33-88" tabindex="-1"></a>  surv_probabilities <span class="ot">&lt;-</span> <span class="fl">1.0</span> <span class="sc">-</span> stats<span class="sc">::</span><span class="fu">pweibull</span>(eval.time,</span>
+<span id="cb33-89"><a href="unit-testing.html#cb33-89" tabindex="-1"></a>                                              <span class="at">shape =</span> <span class="fl">1.0</span> <span class="sc">/</span> <span class="fu">exp</span>(object<span class="sc">$</span>scale),</span>
+<span id="cb33-90"><a href="unit-testing.html#cb33-90" tabindex="-1"></a>                                              <span class="at">scale =</span> <span class="fu">exp</span>(lin_predictors))</span>
+<span id="cb33-91"><a href="unit-testing.html#cb33-91" tabindex="-1"></a>  <span class="co"># Ensure valid predictions</span></span>
+<span id="cb33-92"><a href="unit-testing.html#cb33-92" tabindex="-1"></a>  surv_probabilities <span class="ot">&lt;-</span> <span class="fu">.testProbabilities</span>(surv_probabilities)</span>
+<span id="cb33-93"><a href="unit-testing.html#cb33-93" tabindex="-1"></a>  </span>
+<span id="cb33-94"><a href="unit-testing.html#cb33-94" tabindex="-1"></a>  <span class="do">### Task Implementation</span></span>
+<span id="cb33-95"><a href="unit-testing.html#cb33-95" tabindex="-1"></a>  <span class="co"># Bin and tally predicted probabilities</span></span>
+<span id="cb33-96"><a href="unit-testing.html#cb33-96" tabindex="-1"></a>  result <span class="ot">&lt;-</span> <span class="fu">.binData</span>(surv_probabilities, bin.boundaries)</span>
+<span id="cb33-97"><a href="unit-testing.html#cb33-97" tabindex="-1"></a>  </span>
+<span id="cb33-98"><a href="unit-testing.html#cb33-98" tabindex="-1"></a>  <span class="do">### Result Construction and Testing</span></span>
+<span id="cb33-99"><a href="unit-testing.html#cb33-99" tabindex="-1"></a>  <span class="co"># No further manipulation of the result of .binData() is required</span></span>
+<span id="cb33-100"><a href="unit-testing.html#cb33-100" tabindex="-1"></a>  result</span>
+<span id="cb33-101"><a href="unit-testing.html#cb33-101" tabindex="-1"></a>}</span>
+<span id="cb33-102"><a href="unit-testing.html#cb33-102" tabindex="-1"></a></span>
+<span id="cb33-103"><a href="unit-testing.html#cb33-103" tabindex="-1"></a><span class="co">#&#39; S3 method for objects returned by `SomaSurvival::fitSurvregnet`</span></span>
+<span id="cb33-104"><a href="unit-testing.html#cb33-104" tabindex="-1"></a><span class="co">#&#39; @noRd</span></span>
+<span id="cb33-105"><a href="unit-testing.html#cb33-105" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
+<span id="cb33-106"><a href="unit-testing.html#cb33-106" tabindex="-1"></a>survProbBins.survregnet <span class="ot">&lt;-</span> <span class="cf">function</span>(object, newdata, eval.time, bin.boundaries,</span>
+<span id="cb33-107"><a href="unit-testing.html#cb33-107" tabindex="-1"></a>                                    lambda, ...) {</span>
+<span id="cb33-108"><a href="unit-testing.html#cb33-108" tabindex="-1"></a>  <span class="do">### Input Testing</span></span>
+<span id="cb33-109"><a href="unit-testing.html#cb33-109" tabindex="-1"></a>  <span class="co"># We forego testing for appropriate covariates in `newdata`, which will</span></span>
+<span id="cb33-110"><a href="unit-testing.html#cb33-110" tabindex="-1"></a>  <span class="co">#   be inherent in the procedure used to obtain predictions</span></span>
+<span id="cb33-111"><a href="unit-testing.html#cb33-111" tabindex="-1"></a>  <span class="fu">stopifnot</span>(</span>
+<span id="cb33-112"><a href="unit-testing.html#cb33-112" tabindex="-1"></a>    <span class="st">&quot;`newdata` must be a data.frame or soma_adat.&quot;</span> <span class="ot">=</span> </span>
+<span id="cb33-113"><a href="unit-testing.html#cb33-113" tabindex="-1"></a>      <span class="sc">!</span>missing <span class="sc">&amp;&amp;</span> <span class="fu">is.data.frame</span>(newdata) <span class="sc">||</span> <span class="fu">is.soma_adat</span>(newdata),</span>
+<span id="cb33-114"><a href="unit-testing.html#cb33-114" tabindex="-1"></a>    <span class="st">&quot;`eval.time` must be numeric.&quot;</span> <span class="ot">=</span> </span>
+<span id="cb33-115"><a href="unit-testing.html#cb33-115" tabindex="-1"></a>      <span class="sc">!</span><span class="fu">missing</span>(eval.time) <span class="sc">&amp;&amp;</span> <span class="fu">is.numeric</span>(eval.time) <span class="sc">&amp;&amp;</span> </span>
+<span id="cb33-116"><a href="unit-testing.html#cb33-116" tabindex="-1"></a>      <span class="fu">is.vector</span>(eval.time) <span class="sc">&amp;&amp;</span> <span class="fu">length</span>(eval.time) <span class="sc">==</span> 1L <span class="sc">&amp;&amp;</span> eval.time <span class="sc">&gt;</span> <span class="fl">0.0</span>,</span>
+<span id="cb33-117"><a href="unit-testing.html#cb33-117" tabindex="-1"></a>    <span class="st">&quot;`bin.boundaries` must be a numeric vector in [0, 1].&quot;</span> <span class="ot">=</span> </span>
+<span id="cb33-118"><a href="unit-testing.html#cb33-118" tabindex="-1"></a>      <span class="sc">!</span><span class="fu">missing</span>(bin.boundaries) <span class="sc">&amp;&amp;</span> <span class="fu">is.numeric</span>(bin.boundaries) <span class="sc">&amp;&amp;</span></span>
+<span id="cb33-119"><a href="unit-testing.html#cb33-119" tabindex="-1"></a>      <span class="fu">length</span>(bin.boundaries) <span class="sc">&gt;</span> 1L <span class="sc">&amp;&amp;</span> <span class="fu">all</span>(bin.boundaries <span class="sc">&gt;=</span> <span class="fl">0.0</span>) <span class="sc">&amp;&amp;</span> </span>
+<span id="cb33-120"><a href="unit-testing.html#cb33-120" tabindex="-1"></a>      <span class="fu">all</span>(bin.boundaries <span class="sc">&lt;=</span> <span class="fl">1.0</span>),</span>
+<span id="cb33-121"><a href="unit-testing.html#cb33-121" tabindex="-1"></a>    <span class="st">&quot;`lambda` must be a non-negative scalar.&quot;</span> <span class="ot">=</span> </span>
+<span id="cb33-122"><a href="unit-testing.html#cb33-122" tabindex="-1"></a>      <span class="sc">!</span><span class="fu">missing</span>(lambda) <span class="sc">&amp;&amp;</span> <span class="fu">is.numeric</span>(lambda) <span class="sc">&amp;&amp;</span> </span>
+<span id="cb33-123"><a href="unit-testing.html#cb33-123" tabindex="-1"></a>      <span class="fu">is.vector</span>(lambda) <span class="sc">&amp;&amp;</span> <span class="fu">length</span>(lambda) <span class="sc">==</span> 1L <span class="sc">&amp;&amp;</span> lambda <span class="sc">&gt;=</span> <span class="fl">0.0</span></span>
+<span id="cb33-124"><a href="unit-testing.html#cb33-124" tabindex="-1"></a>  )</span>
+<span id="cb33-125"><a href="unit-testing.html#cb33-125" tabindex="-1"></a>  </span>
+<span id="cb33-126"><a href="unit-testing.html#cb33-126" tabindex="-1"></a>  <span class="do">### Input Processing</span></span>
+<span id="cb33-127"><a href="unit-testing.html#cb33-127" tabindex="-1"></a>  <span class="co"># Convert to survreg object and use survreg method</span></span>
+<span id="cb33-128"><a href="unit-testing.html#cb33-128" tabindex="-1"></a>  survreg_object <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>(SomaSurvival<span class="sc">::</span><span class="fu">convert2Survreg</span>(object, lambda),</span>
+<span id="cb33-129"><a href="unit-testing.html#cb33-129" tabindex="-1"></a>                             <span class="at">error =</span> <span class="cf">function</span>(e) {</span>
+<span id="cb33-130"><a href="unit-testing.html#cb33-130" tabindex="-1"></a>                               <span class="fu">stop</span>(<span class="st">&quot;Unable to convert `object` to `survreg`.</span><span class="sc">\n\t</span><span class="st">&quot;</span>,</span>
+<span id="cb33-131"><a href="unit-testing.html#cb33-131" tabindex="-1"></a>                                    e<span class="sc">$</span>message, <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb33-132"><a href="unit-testing.html#cb33-132" tabindex="-1"></a>                             })</span>
+<span id="cb33-133"><a href="unit-testing.html#cb33-133" tabindex="-1"></a>  </span>
+<span id="cb33-134"><a href="unit-testing.html#cb33-134" tabindex="-1"></a>  <span class="do">### Task Implementation</span></span>
+<span id="cb33-135"><a href="unit-testing.html#cb33-135" tabindex="-1"></a>  result <span class="ot">&lt;-</span> <span class="fu">survProbBins</span>(survreg_object, newdata, eval.time, bin.boundaries, ...)</span>
+<span id="cb33-136"><a href="unit-testing.html#cb33-136" tabindex="-1"></a></span>
+<span id="cb33-137"><a href="unit-testing.html#cb33-137" tabindex="-1"></a>  <span class="do">### Result Construction and Testing</span></span>
+<span id="cb33-138"><a href="unit-testing.html#cb33-138" tabindex="-1"></a>  <span class="co"># No further manipulation of the result of .binData() is required</span></span>
+<span id="cb33-139"><a href="unit-testing.html#cb33-139" tabindex="-1"></a>  result</span>
+<span id="cb33-140"><a href="unit-testing.html#cb33-140" tabindex="-1"></a>}</span></code></pre></div>
+<div id="input-testing-3" class="section level4 hasAnchor" number="3.3.1.1">
+<h4><span class="header-section-number">3.3.1.1</span> Input Testing<a href="unit-testing.html#input-testing-3" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Notice that with the exception of the <code>lambda</code> input required for <code>survProbBins.survregnet()</code>, the input testing elements are identical. One could develop the unit tests for each S3 extension separately, or streamline the procedure by defining a single internal expectation that each model type uses. Specifically, we can define the following expectation in the Setup section of the test file</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="unit-testing.html#cb34-1" tabindex="-1"></a>expect_input_fails <span class="ot">&lt;-</span> <span class="cf">function</span>(model, data) {</span>
+<span id="cb34-2"><a href="unit-testing.html#cb34-2" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">survProbBins</span>(model), </span>
+<span id="cb34-3"><a href="unit-testing.html#cb34-3" tabindex="-1"></a>               <span class="st">&quot;`newdata` must be a data.frame or soma_adat.&quot;</span>)</span>
+<span id="cb34-4"><a href="unit-testing.html#cb34-4" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">survProbBins</span>(model, <span class="fu">matrix</span>(<span class="dv">1</span>, <span class="dv">20</span>, <span class="dv">5</span>)),</span>
+<span id="cb34-5"><a href="unit-testing.html#cb34-5" tabindex="-1"></a>               <span class="st">&quot;`newdata` must be a data.frame or soma_adat.&quot;</span>)</span>
+<span id="cb34-6"><a href="unit-testing.html#cb34-6" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">survProbBins</span>(model, data),</span>
+<span id="cb34-7"><a href="unit-testing.html#cb34-7" tabindex="-1"></a>               <span class="st">&quot;`eval.time` must be a positive scalar.&quot;</span>)</span>
+<span id="cb34-8"><a href="unit-testing.html#cb34-8" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">survProbBins</span>(model, data, <span class="fu">matrix</span>(<span class="fl">1.0</span>, 1L, 1L)),</span>
+<span id="cb34-9"><a href="unit-testing.html#cb34-9" tabindex="-1"></a>               <span class="st">&quot;`eval.time` must be a positive scalar.&quot;</span>)</span>
+<span id="cb34-10"><a href="unit-testing.html#cb34-10" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">survProbBins</span>(model, data, <span class="fu">c</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>)),</span>
+<span id="cb34-11"><a href="unit-testing.html#cb34-11" tabindex="-1"></a>               <span class="st">&quot;`eval.time` must be a positive scalar.&quot;</span>)</span>
+<span id="cb34-12"><a href="unit-testing.html#cb34-12" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">survProbBins</span>(model, data, <span class="sc">-</span><span class="fl">1.5</span>),</span>
+<span id="cb34-13"><a href="unit-testing.html#cb34-13" tabindex="-1"></a>               <span class="st">&quot;`eval.time` must be a positive scalar.&quot;</span>)</span>
+<span id="cb34-14"><a href="unit-testing.html#cb34-14" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">survProbBins</span>(model, data, <span class="fl">1.0</span>),</span>
+<span id="cb34-15"><a href="unit-testing.html#cb34-15" tabindex="-1"></a>               <span class="st">&quot;`bin.boundaries` must be a numeric vector in [0, 1].&quot;</span>)</span>
+<span id="cb34-16"><a href="unit-testing.html#cb34-16" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">survProbBins</span>(model, data, <span class="fl">1.0</span>, <span class="st">&quot;a&quot;</span>),</span>
+<span id="cb34-17"><a href="unit-testing.html#cb34-17" tabindex="-1"></a>               <span class="st">&quot;`bin.boundaries` must be a numeric vector in [0, 1].&quot;</span>)</span>
+<span id="cb34-18"><a href="unit-testing.html#cb34-18" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">survProbBins</span>(model, data, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
+<span id="cb34-19"><a href="unit-testing.html#cb34-19" tabindex="-1"></a>               <span class="st">&quot;`bin.boundaries` must be a numeric vector in [0, 1].&quot;</span>)</span>
+<span id="cb34-20"><a href="unit-testing.html#cb34-20" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">survProbBins</span>(model, data, <span class="fl">1.0</span>, <span class="fu">c</span>(<span class="sc">-</span><span class="fl">1.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>)),</span>
+<span id="cb34-21"><a href="unit-testing.html#cb34-21" tabindex="-1"></a>               <span class="st">&quot;`bin.boundaries` must be a numeric vector in [0, 1].&quot;</span>)</span>
+<span id="cb34-22"><a href="unit-testing.html#cb34-22" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">survProbBins</span>(model, data, <span class="fl">1.0</span>, <span class="fu">c</span>(<span class="fl">0.0</span>, <span class="fl">1.0</span>, <span class="fl">2.0</span>)),</span>
+<span id="cb34-23"><a href="unit-testing.html#cb34-23" tabindex="-1"></a>               <span class="st">&quot;`bin.boundaries` must be a numeric vector in [0, 1].&quot;</span>)</span>
+<span id="cb34-24"><a href="unit-testing.html#cb34-24" tabindex="-1"></a>}</span></code></pre></div>
+<p>And employ this function to test that the input testing is behaving as expected.</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="unit-testing.html#cb35-1" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;`survProbBins.coxph()` input tests return expected errors&quot;</span>, {</span>
+<span id="cb35-2"><a href="unit-testing.html#cb35-2" tabindex="-1"></a>  apts <span class="ot">&lt;-</span> SomaReadr<span class="sc">::</span><span class="fu">getAnalytes</span>(SomaSurvival<span class="sc">::</span>sim_surv_data)</span>
+<span id="cb35-3"><a href="unit-testing.html#cb35-3" tabindex="-1"></a>  form <span class="ot">&lt;-</span> SomaSurvival<span class="sc">::</span><span class="fu">createSurvFormula</span>(<span class="at">features =</span> apts, </span>
+<span id="cb35-4"><a href="unit-testing.html#cb35-4" tabindex="-1"></a>                                          <span class="at">time     =</span> <span class="st">&quot;time_lower&quot;</span>,</span>
+<span id="cb35-5"><a href="unit-testing.html#cb35-5" tabindex="-1"></a>                                          <span class="at">status   =</span> <span class="st">&quot;status_right&quot;</span>)</span>
+<span id="cb35-6"><a href="unit-testing.html#cb35-6" tabindex="-1"></a>  cox_model <span class="ot">&lt;-</span> survival<span class="sc">::</span><span class="fu">coxph</span>(form, SomaSurvival<span class="sc">::</span>sim_surv_data)</span>
+<span id="cb35-7"><a href="unit-testing.html#cb35-7" tabindex="-1"></a>  <span class="fu">expect_input_fails</span>(cox_model, SomaSurvival<span class="sc">::</span>sim_surv_data)</span>
+<span id="cb35-8"><a href="unit-testing.html#cb35-8" tabindex="-1"></a>})</span>
+<span id="cb35-9"><a href="unit-testing.html#cb35-9" tabindex="-1"></a></span>
+<span id="cb35-10"><a href="unit-testing.html#cb35-10" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;`survProbBins.survreg()` input tests return expected errors&quot;</span>, {</span>
+<span id="cb35-11"><a href="unit-testing.html#cb35-11" tabindex="-1"></a>  apts <span class="ot">&lt;-</span> SomaReadr<span class="sc">::</span><span class="fu">getAnalytes</span>(SomaSurvival<span class="sc">::</span>sim_surv_data)</span>
+<span id="cb35-12"><a href="unit-testing.html#cb35-12" tabindex="-1"></a>  form <span class="ot">&lt;-</span> SomaSurvival<span class="sc">::</span><span class="fu">createSurvFormula</span>(<span class="at">features =</span> apts, </span>
+<span id="cb35-13"><a href="unit-testing.html#cb35-13" tabindex="-1"></a>                                          <span class="at">time =</span> <span class="st">&quot;time_lower&quot;</span>,</span>
+<span id="cb35-14"><a href="unit-testing.html#cb35-14" tabindex="-1"></a>                                          <span class="at">status =</span> <span class="st">&quot;status_right&quot;</span>)</span>
+<span id="cb35-15"><a href="unit-testing.html#cb35-15" tabindex="-1"></a>  survreg_model <span class="ot">&lt;-</span> survival<span class="sc">::</span><span class="fu">survreg</span>(form, SomaSurvival<span class="sc">::</span>sim_surv_data)</span>
+<span id="cb35-16"><a href="unit-testing.html#cb35-16" tabindex="-1"></a>  <span class="fu">expect_input_fails</span>(survreg_model, SomaSurvival<span class="sc">::</span>sim_surv_data)</span>
+<span id="cb35-17"><a href="unit-testing.html#cb35-17" tabindex="-1"></a>})</span>
+<span id="cb35-18"><a href="unit-testing.html#cb35-18" tabindex="-1"></a></span>
+<span id="cb35-19"><a href="unit-testing.html#cb35-19" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;`survProbBins.survregnet()` input tests return expected errors&quot;</span>, {</span>
+<span id="cb35-20"><a href="unit-testing.html#cb35-20" tabindex="-1"></a>  apts <span class="ot">&lt;-</span> SomaReadr<span class="sc">::</span><span class="fu">getAnalytes</span>(SomaSurvival<span class="sc">::</span>sim_surv_data)</span>
+<span id="cb35-21"><a href="unit-testing.html#cb35-21" tabindex="-1"></a>  form <span class="ot">&lt;-</span> SomaSurvival<span class="sc">::</span><span class="fu">createSurvFormula</span>(<span class="at">features =</span> apts, </span>
+<span id="cb35-22"><a href="unit-testing.html#cb35-22" tabindex="-1"></a>                                          <span class="at">time     =</span> <span class="st">&quot;time_lower&quot;</span>,</span>
+<span id="cb35-23"><a href="unit-testing.html#cb35-23" tabindex="-1"></a>                                          <span class="at">status   =</span> <span class="st">&quot;status_right&quot;</span>)</span>
+<span id="cb35-24"><a href="unit-testing.html#cb35-24" tabindex="-1"></a>  grid <span class="ot">&lt;-</span> SomaSurvival<span class="sc">::</span><span class="fu">calcEnetGrid</span>(form, SomaSurvival<span class="sc">::</span>sim_surv_data,</span>
+<span id="cb35-25"><a href="unit-testing.html#cb35-25" tabindex="-1"></a>                                     <span class="at">.alpha =</span> <span class="fl">0.2</span>, <span class="at">n.lambda =</span> <span class="dv">5</span>)</span>
+<span id="cb35-26"><a href="unit-testing.html#cb35-26" tabindex="-1"></a>  survregnet_model <span class="ot">&lt;-</span> SomaSurvival<span class="sc">::</span><span class="fu">fitSurvregnet</span>(form, SomaSurvival<span class="sc">::</span>sim_surv_data,</span>
+<span id="cb35-27"><a href="unit-testing.html#cb35-27" tabindex="-1"></a>                                                  <span class="at">tune.grid =</span> grid, <span class="at">alpha =</span> <span class="fl">0.2</span>)</span>
+<span id="cb35-28"><a href="unit-testing.html#cb35-28" tabindex="-1"></a>  <span class="fu">expect_input_fails</span>(survregnet_model, SomaSurvival<span class="sc">::</span>sim_surv_data)</span>
+<span id="cb35-29"><a href="unit-testing.html#cb35-29" tabindex="-1"></a>  </span>
+<span id="cb35-30"><a href="unit-testing.html#cb35-30" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">survProbBins</span>(survregnet_model, SomaSurvival<span class="sc">::</span>sim_surv_data,</span>
+<span id="cb35-31"><a href="unit-testing.html#cb35-31" tabindex="-1"></a>                            <span class="at">eval.time =</span> <span class="fl">10.0</span>, <span class="at">bin.boundaries =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.5</span>, <span class="fl">1.0</span>)),</span>
+<span id="cb35-32"><a href="unit-testing.html#cb35-32" tabindex="-1"></a>               <span class="st">&quot;`lambda` must be a non-negative scalar.&quot;</span>)</span>
+<span id="cb35-33"><a href="unit-testing.html#cb35-33" tabindex="-1"></a>  </span>
+<span id="cb35-34"><a href="unit-testing.html#cb35-34" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">survProbBins</span>(survregnet_model, SomaSurvival<span class="sc">::</span>sim_surv_data,</span>
+<span id="cb35-35"><a href="unit-testing.html#cb35-35" tabindex="-1"></a>                            <span class="at">eval.time =</span> <span class="fl">10.0</span>, <span class="at">bin.boundaries =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.5</span>, <span class="fl">1.0</span>),</span>
+<span id="cb35-36"><a href="unit-testing.html#cb35-36" tabindex="-1"></a>                            <span class="at">lambda =</span> <span class="st">&quot;a&quot;</span>),</span>
+<span id="cb35-37"><a href="unit-testing.html#cb35-37" tabindex="-1"></a>               <span class="st">&quot;`lambda` must be a non-negative scalar.&quot;</span>)</span>
+<span id="cb35-38"><a href="unit-testing.html#cb35-38" tabindex="-1"></a>  </span>
+<span id="cb35-39"><a href="unit-testing.html#cb35-39" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">survProbBins</span>(survregnet_model, SomaSurvival<span class="sc">::</span>sim_surv_data,</span>
+<span id="cb35-40"><a href="unit-testing.html#cb35-40" tabindex="-1"></a>                            <span class="at">eval.time =</span> <span class="fl">10.0</span>, <span class="at">bin.boundaries =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.5</span>, <span class="fl">1.0</span>),</span>
+<span id="cb35-41"><a href="unit-testing.html#cb35-41" tabindex="-1"></a>                            <span class="at">lambda =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)),</span>
+<span id="cb35-42"><a href="unit-testing.html#cb35-42" tabindex="-1"></a>               <span class="st">&quot;`lambda` must be a non-negative scalar.&quot;</span>)</span>
+<span id="cb35-43"><a href="unit-testing.html#cb35-43" tabindex="-1"></a>  </span>
+<span id="cb35-44"><a href="unit-testing.html#cb35-44" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">survProbBins</span>(survregnet_model, SomaSurvival<span class="sc">::</span>sim_surv_data,</span>
+<span id="cb35-45"><a href="unit-testing.html#cb35-45" tabindex="-1"></a>                            <span class="at">eval.time =</span> <span class="fl">10.0</span>, <span class="at">bin.boundaries =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.5</span>, <span class="fl">1.0</span>),</span>
+<span id="cb35-46"><a href="unit-testing.html#cb35-46" tabindex="-1"></a>                            <span class="at">lambda =</span> <span class="sc">-</span><span class="fl">0.5</span>),</span>
+<span id="cb35-47"><a href="unit-testing.html#cb35-47" tabindex="-1"></a>               <span class="st">&quot;`lambda` must be a non-negative scalar.&quot;</span>)</span>
+<span id="cb35-48"><a href="unit-testing.html#cb35-48" tabindex="-1"></a>})</span></code></pre></div>
+</div>
+<div id="input-processing-3" class="section level4 hasAnchor" number="3.3.1.2">
+<h4><span class="header-section-number">3.3.1.2</span> Input Processing<a href="unit-testing.html#input-processing-3" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>This is our first indication that the S3 based design may not be the most robust choice w.r.t. unit testing. Specifically, there is no clear way to test the input processing steps. We can only implement these steps locally and validate that <code>survProbBins()</code> returns the expected results assuming that the input processing steps are accurate.</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="unit-testing.html#cb36-1" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;`.survProbBins.coxph()` returns expected results&quot;</span>, {</span>
+<span id="cb36-2"><a href="unit-testing.html#cb36-2" tabindex="-1"></a>  </span>
+<span id="cb36-3"><a href="unit-testing.html#cb36-3" tabindex="-1"></a>})</span></code></pre></div>
+<p>STILL NEEDS TO BE WRITTEN</p>
+<p>Mention inability to test survival vs event probabilities</p>
+<p>Bring in framework S3 methods to show how to test this</p>
+<p>POINTS YET TO MAKE</p>
+<p>Avoid hard-coding values when possible– they can be much harder to maintain.</p>
+<p>Just like function development, avoid repeated code. If the test structures are the same for several test groups, create a local function defining the test structure and pass the values to be tested (give example)</p>
+<p>Can recreate the behavior of the testthat expect_* functions (give example)</p>
+<p>Hoping that we will implement 2 flags. First flag is nightly checks of the full test suite – testing all internal functions, etc. Second flag is a PR check level, skips the potentially longer duration units tests of each component, but ensures that the final result is what we expect.</p>
+
+</div>
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="extended-function-example.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="pull-request-pr-peer-review.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": {
+    "github": false,
+    "facebook": true,
+    "twitter": true,
+    "linkedin": false,
+    "weibo": false,
+    "instapaper": false,
+    "vk": false,
+    "whatsapp": false,
+    "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+  },
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": {
+    "link": null,
+    "text": null
+  },
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": null,
+    "text": null
+  },
+  "download": ["Code_Development.pdf", "Code_Development.epub"],
+  "search": {
+    "engine": "fuse",
+    "options": null
+  },
+  "toc": {
+    "collapse": "subsection"
+  }
+});
+});
+</script>
+
+</body>
+
+</html>
